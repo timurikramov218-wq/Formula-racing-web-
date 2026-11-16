@@ -3,13 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Formula Racing Web</title>
+<title>Formula Racing Web — free F1-style racing game in your browser</title>
+<link rel="canonical" href="https://timurikramov218-wq.github.io/Formula-racing-web-/">
+<meta name="keywords" content="formula racing web, formula racing, racing game, browser racing game, f1 game online, free racing game, open-wheel racing">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Formula Racing Web","alternateName":["Formula Racing","FRW"],"url":"https://timurikramov218-wq.github.io/Formula-racing-web-/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Formula Racing Web","url":"https://timurikramov218-wq.github.io/Formula-racing-web-/","genre":"Racing","gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"A free open-wheel racing game in the browser: five circuits, twenty cars, career mode, qualifying, pit stops, tyres, DRS and team radio."}</script>
 <meta name="theme-color" content="#0a0e13">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Formula Racing">
 <meta property="og:type" content="website"><meta property="og:url" content="https://timurikramov218-wq.github.io/Formula-racing-web-/"><meta property="og:image" content="https://timurikramov218-wq.github.io/Formula-racing-web-/icon-512.png"><meta property="og:site_name" content="Formula Racing Web"><meta property="og:title" content="Formula Racing Web">
-<meta property="og:description" content="A free open-wheel racing game in your browser: three circuits, twenty cars, pit stops, tyres, DRS and team radio.">
+<meta property="og:description" content="A free open-wheel racing game in your browser: five circuits, twenty cars, career mode, pit stops, tyres, DRS and team radio.">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png">
-<meta name="description" content="Formula Racing Web: a free open-wheel racing game in your browser. Three circuits, twenty cars, pit stops, tyres, DRS, qualifying and team radio.">
+<meta name="description" content="Formula Racing Web: a free open-wheel racing game in your browser. Five circuits, twenty cars, career mode, qualifying, pit stops, tyres, DRS and team radio. No download.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Titillium+Web:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -1103,6 +1107,7 @@ function paintSponsors(g, S, team) {
 function liveryTex(team, size, number) {   // paint the mask: red = team colour, green = stripes, blue = carbon; the team name along the sides, the number on the fin
   const key = team.name + team.c1 + size + "#" + (number ?? ""); if (LIVERY.has(key)) return LIVERY.get(key);
   const c = document.createElement("canvas"); c.width = c.height = size; const g = c.getContext("2d"), tex = new THREE.CanvasTexture(c);
+  const rough = document.createElement("canvas"); rough.width = rough.height = size; const rtex = new THREE.CanvasTexture(rough); rtex.flipY = false;
   tex.flipY = false; tex.encoding = THREE.sRGBEncoding; tex.anisotropy = 4;
   const paint = () => {
     // the mask is coarse: blur it slightly, then sharpen each colour's share again, so the stripes get smooth curved edges with soft anti-aliasing
@@ -1112,13 +1117,17 @@ function liveryTex(team, size, number) {   // paint the mask: red = team colour,
     for (let k = 0; k < d.length; k += 4) { let r = d[k] / 255, gg = d[k + 1] / 255, b = d[k + 2] / 255; r = (r + gg) ** 7; b = b ** 7; const t = r + b || 1; d[k] = r / t * 255; d[k + 1] = 0; d[k + 2] = b / t * 255; }
     const A = new THREE.Color(team.c1), Bc = new THREE.Color(team.c2), toB = (x) => Math.round(x * 255);
     const c1 = [toB(A.r), toB(A.g), toB(A.b)], c2 = [toB(Bc.r), toB(Bc.g), toB(Bc.b)], cb = [22, 23, 26];
-    for (let k = 0; k < d.length; k += 4) { const r = d[k], gg = d[k + 1], b = d[k + 2], s = r + gg + b || 1;
-      for (let a = 0; a < 3; a++) d[k + a] = (c1[a] * r + c2[a] * gg + cb[a] * b) / s; }
-    g.putImageData(im, 0, 0);
+    // carbon parts get a 2x2 twill weave; the roughness map records where the paint is (glossy) and where the carbon is (satin)
+    const rc = rough.getContext("2d"), rim = rc.createImageData(size, size), rd = rim.data, cell = Math.max(2, Math.round(size / 512));
+    for (let k = 0, px = 0; k < d.length; k += 4, px++) { const r = d[k], gg = d[k + 1], b = d[k + 2], s = r + gg + b || 1, cw = b / s;
+      const x = px % size, y = (px / size) | 0, tw = ((((x / cell) | 0) + ((y / cell) | 0)) >> 1) % 2 ? 1.25 : 0.8, wv = 1 + (tw - 1) * cw;
+      for (let a = 0; a < 3; a++) d[k + a] = (c1[a] * r + c2[a] * gg + cb[a] * b * wv) / s;
+      const ro = 70 + cw * 120; rd[k] = rd[k + 1] = rd[k + 2] = ro; rd[k + 3] = 255; }
+    g.putImageData(im, 0, 0); rc.putImageData(rim, 0, 0); rtex.needsUpdate = true;
     NUMBER = number ?? null; paintSponsors(g, size, team); NUMBER = null;
     tex.needsUpdate = true; };
   if (MASK.complete) paint(); else MASK.addEventListener("load", paint);
-  LIVERY.set(key, tex); return tex;
+  tex.roughTex = rtex; LIVERY.set(key, tex); return tex;
 }
 const TYRES = { S: { name: "SOFT", col: "#ff3b30", ring: "#e10600", g: 1.025, life: 0.45 }, M: { name: "MEDIUM", col: "#ffd23f", ring: "#f2c200", g: 1, life: 0.72 }, H: { name: "HARD", col: "#f2f4f6", ring: "#e8e8e8", g: 0.978, life: 1.05 } };
 const TYRE_ORDER = ["S", "M", "H"];
@@ -1133,7 +1142,11 @@ const grainTex = (() => { const t = canvasTex(256, 256, (g, w, h) => { g.fillSty
 function setTyre(car, c) { car.tyre = c; if (car.tyreMat) car.tyreMat.dispose(); const m = car.tyreMat = TYRE_MAT[c].clone(); m.bumpMap = grainTex; m.bumpScale = 0.002; car.wearShown = undefined;
   for (const w of car.mesh.userData.wheels) w.t.traverse((o) => { if (o.userData.tyre) o.material = m; }); }
 function buildCar(team, num, isPlayer) {
-  const body = new THREE.MeshPhysicalMaterial({ map: liveryTex(team, isPlayer ? 2048 : 1024, num || null), roughness: 0.36, metalness: 0.2, clearcoat: 0.6, clearcoatRoughness: 0.08, envMap: ENV.tex, envMapIntensity: 0.25, side: THREE.DoubleSide });   // glossy lacquer over the paint
+  const lt = liveryTex(team, isPlayer ? 2048 : 1024, num || null);
+  const body = new THREE.MeshPhysicalMaterial({ map: lt, roughnessMap: lt.roughTex, roughness: 1, metalness: 0.15, clearcoat: 0.55, clearcoatRoughness: 0.1, envMap: ENV.tex, envMapIntensity: 0.55, side: THREE.DoubleSide });   // lacquered paint, satin carbon
+  // ambient occlusion by height: the floor, the underside of the sidepods and the lower bodywork sit in shade, as on a real car
+  body.onBeforeCompile = (sh) => { sh.vertexShader = "varying float vAOy;\n" + sh.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n vAOy = position.y;");
+    sh.fragmentShader = "varying float vAOy;\n" + sh.fragmentShader.replace("#include <map_fragment>", "#include <map_fragment>\n diffuseColor.rgb *= mix(0.42, 1.0, smoothstep(0.06, 0.62, vAOy));"); };
   const matOf = (m) => (m === 0 ? body : m === 1 ? MAT_SHARED.light : m === 2 ? MAT_SHARED.tyre : MAT_SHARED.cover);
   const root = new THREE.Group(), lod = new THREE.LOD(), flaps = [];
   for (const [lvl, dist] of isPlayer ? [["lod0", 0], ["lod0m", 60], ["lod1", 140]] : [["lod0", 0], ["lod0m", 12], ["lod1", 30]]) { const g = new THREE.Group(); for (const p of CARGEO[lvl]) { const m = new THREE.Mesh(p.g, matOf(p.mat)); m.castShadow = true;

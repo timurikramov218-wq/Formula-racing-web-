@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://timurikramov218-wq.github.io/Formula-racing-web-/sitemap.xml

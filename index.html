@@ -11,17 +11,17 @@
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png">
 <meta name="description" content="Formula Racing Web: a free open-wheel racing game in your browser. Three circuits, twenty cars, pit stops, tyres, DRS, qualifying and team radio.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Titillium+Web:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Layout: a quiet paddock-at-dusk screen; hairlines and chamfered corners (cut like carbon parts), one ice-blue accent */
+/* Look: broadcast-style racing UI: near-black panels, white type, one racing red accent, bold condensed headings */
 :root {
   color-scheme: dark;
-  --ink: #0a0e13; --ink2: #111720; --glass: rgba(10,14,19,0.72); --glass2: rgba(255,255,255,0.04);
-  --line: rgba(220,232,242,0.14); --line2: rgba(220,232,242,0.3);
-  --fg: #eef2f5; --fg2: #a9b4bf; --fg3: #6c7784;
-  --ice: #8fd3ff; --ice-d: rgba(143,211,255,0.14);
+  --ink: #0b0b0d; --ink2: #15151a; --glass: rgba(12,12,15,0.82); --glass2: rgba(255,255,255,0.05);
+  --line: rgba(255,255,255,0.12); --line2: rgba(255,255,255,0.28);
+  --fg: #ffffff; --fg2: #b8b8c0; --fg3: #75757f;
+  --ice: #e10600; --ice-d: rgba(225,6,0,0.18);
   --purple: #c08bff; --go: #52d68a; --stop: #ff4d3d; --amber: #ffc857;
-  --display: "Michroma", "Eurostile", "Arial Black", system-ui, sans-serif; --body: "Inter", system-ui, -apple-system, sans-serif;
+  --display: "Titillium Web", "Arial Black", system-ui, sans-serif; --body: "Titillium Web", "Inter", system-ui, -apple-system, sans-serif;
   --cut: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   --cut-s: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
 }
@@ -123,7 +123,7 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .touch[hidden] { display: none; }
 .tbtn { position: absolute; pointer-events: auto; background: rgba(10,14,19,0.42); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); clip-path: var(--cut); display: grid; place-items: center; touch-action: none; color: var(--fg); font-family: var(--display); font-size: 10px; letter-spacing: 0.2em; box-shadow: inset 0 0 0 1px var(--line2); }
 .tbtn::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 10px; height: 2px; background: var(--line2); }
-.tbtn.on { background: rgba(143,211,255,0.22); } .tbtn.on::after { background: var(--ice); }
+.tbtn.on { background: rgba(225,6,0,0.22); } .tbtn.on::after { background: var(--ice); }
 #tGas.on::after { background: var(--go); } #tBrake.on::after { background: var(--stop); }
 #tLeft, #tRight { width: 132px; height: 150px; bottom: max(16px, env(safe-area-inset-bottom)); }
 #tLeft { left: max(14px, env(safe-area-inset-left)); } #tRight { left: calc(max(14px, env(safe-area-inset-left)) + 144px); }
@@ -195,7 +195,7 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .ghint i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.9); color: #0a0e13; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
 .ghint.go { color: #fff; } .ghint.go i { background: #e10600; color: #fff; } .ghint:hover { color: #fff; }
 @media (max-height: 500px) { .garrow { display: none; } .gcard { width: 128px; } .gcard img { height: 54px; } .gname { margin-top: 6px; } .gscheme { margin: 2px 0 8px; } }
-.slider { display: flex; align-items: center; gap: 12px; } .slider input { width: 180px; accent-color: #8fd3ff; } .slider output { font-variant-numeric: tabular-nums; color: var(--fg); font-size: 14px; min-width: 36px; }
+.slider { display: flex; align-items: center; gap: 12px; } .slider input { width: 180px; accent-color: #e10600; } .slider output { font-variant-numeric: tabular-nums; color: var(--fg); font-size: 14px; min-width: 36px; }
 .screen .race-only[hidden], .screen .noquali[hidden] { display: none; }
 /* title: the live race behind, the game's wordmark top right, a big PLAY in the middle */
 .titlescr { background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%), linear-gradient(180deg, rgba(10,14,19,0.15) 0%, rgba(10,14,19,0) 30%, rgba(10,14,19,0) 60%, rgba(10,14,19,0.8) 100%); display: block; }
@@ -222,6 +222,15 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.12) saturate(0.82
 @media (max-width: 640px) { .tower { width: 140px; font-size: 11px; } .tower .row { height: 18px; } .minimap { width: 124px; height: 98px; } .dash { width: 176px; padding: 10px 12px; } .dash .spd, .dash .gear { font-size: 26px; }
   .lapbox > div { min-width: 0; padding: 5px 9px 6px; } .lapbox b { font-size: 14px; } .topbtns { top: calc(max(14px, env(safe-area-inset-top)) + 106px); } .card { margin-left: 0; } .screen { background: rgba(10,14,19,0.92); } }
 @media (prefers-reduced-motion: reduce) { .msg { transition: none; } }
+/* the broadcast look: bold condensed type, italic numbers, red tags */
+.logo, .eyebrow, .tower .th, .lapbox small, .msg, .btn, .tbtn, .opt h3, .gidx, .radio small, .pitmenu h4, .boot b, .sectors small, .topbtns #bBox, .tag, .tinfo { font-weight: 700; }
+.dash .spd, .dash .gear, .lapbox b, .msg { font-weight: 900; font-style: italic; }
+.logo { font-weight: 900; font-style: italic; letter-spacing: 0; } .eyebrow { color: #e10600; }
+.tower .row.me { background: #e10600; } .tower .row.me .n, .tower .row.me .p { color: #fff; }
+.seg button[aria-pressed="true"] { background: #e10600; color: #fff; }
+.btn { background: #e10600; color: #fff; } .btn:hover { background: #ff2a1f; }
+.btn.alt { background: transparent; color: var(--fg2); }
+.panel, .lapbox, .sectors div { background: rgba(12,12,15,0.86); }
 </style>
 </head>
 <body>
@@ -1674,7 +1683,7 @@ function updateCockpit(dt, show) {
   const T = TYRES[c.tyre], life = Math.max(0, 1 - Math.min(1, c.wear)); x.beginPath(); x.arc(40, H - 32, 22, 0, 7); x.fillStyle = T.col; x.fill(); x.fillStyle = "#0a0e13"; x.font = "800 24px Inter, sans-serif"; x.textAlign = "center"; x.fillText(c.tyre, 40, H - 31);
   x.fillStyle = "rgba(255,255,255,0.12)"; x.fillRect(74, H - 44, 110, 14); x.fillStyle = life > 0.5 ? "#24d16b" : life > 0.2 ? "#ffc857" : "#ff3b30"; x.fillRect(74, H - 44, 110 * life, 14);
   x.font = "700 18px Inter, sans-serif"; x.textAlign = "left"; x.fillStyle = "#eef2f5"; x.fillText(Math.round(life * 100) + "%", 74, H - 16);
-  x.textAlign = "center"; x.font = "800 26px Inter, sans-serif"; x.fillStyle = c.drsOpen ? "#24d16b" : c.drsArm ? "#ffc857" : DRS[c.idx] && phase === "race" ? "#8fd3ff" : "#3a424d"; x.fillText("DRS", 262, H - 32);
+  x.textAlign = "center"; x.font = "800 26px Inter, sans-serif"; x.fillStyle = c.drsOpen ? "#24d16b" : c.drsArm ? "#ffc857" : DRS[c.idx] && phase === "race" ? "#e10600" : "#3a424d"; x.fillText("DRS", 262, H - 32);
   x.textAlign = "right"; const msgR = c.pit || c.limiter ? ["LIMITER", "#ffc857"] : c.boxReq ? ["BOX BOX", "#ffc857"] : dmg >= 0.3 ? ["DAMAGE", "#ff3b30"] : ["BB 56.0", "#7f8a96"];
   x.fillStyle = msgR[1]; x.fillText(msgR[0], W - 16, H - 32);
   COCKPIT.tex.needsUpdate = true;
@@ -1810,7 +1819,7 @@ function updateHud(dt) {
   mg.clearRect(0, 0, mini.width, mini.height); mg.lineWidth = 5; mg.strokeStyle = "rgba(220,232,242,0.55)"; mg.lineJoin = "round"; mg.beginPath();
   PTS.forEach((p, i) => { const [x, y] = mp(p.x, p.z); i ? mg.lineTo(x, y) : mg.moveTo(x, y); }); mg.closePath(); mg.stroke();
   { const [x, y] = mp(PTS[0].x, PTS[0].z); mg.fillStyle = "#eef2f5"; mg.fillRect(x - 1.5, y - 7, 3, 14); }
-  for (const o of CARS) { const [x, y] = mp(o.x, o.z); mg.beginPath(); mg.arc(x, y, o === c ? 7 : 5, 0, 7); mg.fillStyle = o.team.c1; mg.fill(); mg.lineWidth = o === c ? 3 : 1.5; mg.strokeStyle = o === c ? "#8fd3ff" : "rgba(10,14,19,0.9)"; mg.stroke(); }
+  for (const o of CARS) { const [x, y] = mp(o.x, o.z); mg.beginPath(); mg.arc(x, y, o === c ? 7 : 5, 0, 7); mg.fillStyle = o.team.c1; mg.fill(); mg.lineWidth = o === c ? 3 : 1.5; mg.strokeStyle = o === c ? "#e10600" : "rgba(10,14,19,0.9)"; mg.stroke(); }
   if (ghostMesh && ghostMesh.visible) { const [x, y] = mp(ghostMesh.position.x, ghostMesh.position.z); mg.beginPath(); mg.arc(x, y, 5, 0, 7); mg.strokeStyle = "#b14cff"; mg.lineWidth = 2.5; mg.stroke(); }
 }
 

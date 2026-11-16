@@ -247,6 +247,22 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
 .btn { background: #e10600; color: #fff; } .btn:hover { background: #ff2a1f; }
 .btn.alt { background: transparent; color: var(--fg2); }
 .panel, .lapbox, .sectors div { background: rgba(12,12,15,0.86); }
+/* race setup: a clean two-column sheet of tiles, pill selectors, one action bar */
+#setup { background: rgba(8,8,10,0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); place-items: start center; padding-top: max(28px, env(safe-area-inset-top)); }
+#setup .card { width: min(920px, 100%); margin: 0 auto; justify-self: center; }
+#setup .eyebrow { margin-bottom: 6px; }
+#setup .stitle { font-size: clamp(26px, 4vw, 38px); margin: 0 0 20px; }
+#setup .grid2 { grid-template-columns: 1fr 1fr; gap: 10px; border-top: 0; margin-bottom: 92px; }
+#setup .opt { flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 10px; padding: 14px 16px 16px; border: 0; background: rgba(255,255,255,0.045); border-radius: 8px; }
+#setup .opt h3 { font-size: 11px; letter-spacing: 0.14em; color: var(--fg3); font-weight: 700; }
+#setup .seg { clip-path: none; box-shadow: none; background: rgba(255,255,255,0.06); border-radius: 6px; padding: 3px; gap: 3px; flex-wrap: nowrap; }
+#setup .seg button { flex: 1; border-radius: 4px; padding: 8px 6px; font-size: 14px; font-weight: 600; box-shadow: none !important; color: var(--fg2); white-space: nowrap; }
+#setup .seg button[aria-pressed="true"] { background: #e10600; color: #fff; }
+#setup .slider { width: 100%; } #setup .slider input { flex: 1; width: auto; accent-color: #e10600; }
+#setup .go { position: fixed; left: 0; right: 0; bottom: 0; justify-content: center; gap: 12px; padding: 14px 20px max(14px, env(safe-area-inset-bottom)); background: linear-gradient(180deg, rgba(8,8,10,0), rgba(8,8,10,0.95) 35%); }
+#setup .go .btn { clip-path: none; border-radius: 6px; padding: 14px 34px; }
+#setup .go .btn.alt { box-shadow: inset 0 0 0 1px var(--line2); }
+@media (max-width: 700px) { #setup .grid2 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -322,7 +338,7 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
 <div class="screen" id="setup" hidden>
   <div class="card">
     <p class="eyebrow" id="sTeam">RACE WEEKEND</p>
-    <h1 class="logo" style="font-size:clamp(26px,5vw,40px)">RACE<br><span>SETUP</span></h1>
+    <h1 class="logo stitle">RACE SETUP</h1>
     <div class="grid2">
       <div class="opt"><h3>CIRCUIT</h3><div class="seg" id="sTrack"><button data-v="yas">Yas Marina</button><button data-v="monza">Monza</button><button data-v="silverstone">Silverstone</button></div></div>
       <div class="opt"><h3>MODE</h3><div class="seg" data-k="mode"><button data-v="race">Race weekend</button><button data-v="tt">Time trial</button></div></div>

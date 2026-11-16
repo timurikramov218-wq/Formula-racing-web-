@@ -57,7 +57,7 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .lapbox b { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
 .lapbox .best b { color: var(--purple); }
 /* speed, gear, revs */
-.dash { position: absolute; left: 50%; transform: translateX(-50%); bottom: max(14px, env(safe-area-inset-bottom)); width: 270px; padding: 11px 16px 11px; }
+.dash { position: absolute; left: 50%; transform: translateX(-50%); bottom: max(14px, env(safe-area-inset-bottom)); width: clamp(270px, calc(100vw - 600px), 460px); padding: 11px 16px 11px; }
 @media (max-width: 640px) { .dash { width: 230px; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 134px); } }
 .dash .tyre { display: flex; align-items: center; gap: 7px; justify-self: end; }
 .dash .tyre i { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: var(--display); font-size: 10px; color: #0a0e13; background: #ffd23f; box-shadow: inset 0 0 0 3px #15181d; }
@@ -269,6 +269,8 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
 #setup .go .btn { clip-path: none; border-radius: 6px; padding: 14px 34px; }
 #setup .go .btn.alt { box-shadow: inset 0 0 0 1px var(--line2); }
 @media (max-width: 700px) { #setup .grid2 { grid-template-columns: 1fr; } }
+.dash .leds { gap: 3px; } .dash .leds i { height: 4px; border-radius: 1px; }
+.dash .spd { font-size: 40px; } .dash .gear { font-size: 40px; }
 </style>
 </head>
 <body>

@@ -199,7 +199,8 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .screen .race-only[hidden], .screen .noquali[hidden] { display: none; }
 /* title: the live race behind, the game's wordmark top right, a big PLAY in the middle */
 .titlescr { background: linear-gradient(90deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.25) 38%, rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%), linear-gradient(180deg, rgba(10,14,19,0.15) 0%, rgba(10,14,19,0) 30%, rgba(10,14,19,0) 60%, rgba(10,14,19,0.8) 100%); display: block; }
-body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.12) saturate(0.82) brightness(0.92); }
+canvas#view { filter: contrast(1.1) saturate(0.86); }   /* the broadcast grade: punchy contrast, natural (not neon) colours */
+body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8) brightness(0.92); }
 /* main menu, broadcast style: logo and profile on top, a big list of modes on the left, circuit tiles bottom right */
 .hbar { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding: max(18px, env(safe-area-inset-top)) max(30px, env(safe-area-inset-right)) 14px max(30px, env(safe-area-inset-left)); background: linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0)); }
 .hlogo { display: flex; align-items: center; gap: 10px; transform: skewX(-10deg); } .hlogo b { font-family: var(--body); font-weight: 900; font-style: italic; font-size: 24px; letter-spacing: 0.01em; }
@@ -414,7 +415,7 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPrefere
 const COARSE = matchMedia("(pointer: coarse)").matches;
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, COARSE ? 1.75 : 2));
 renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(PARK ? 0x9cc3e8 : 0xf0a873); scene.fog = PARK ? new THREE.Fog(0xb9cfe0, 900, 4600) : new THREE.Fog(0xe9b48c, 700, 4200);
@@ -506,7 +507,7 @@ function ribbon(a0, a1, y, mat, uScale, vScale, filter) {   // a strip between l
   const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
   const m = new THREE.Mesh(g, mat); scene.add(m); return m;
 }
-const asphaltTex = canvasTex(512, 1024, (g, w, h) => { g.fillStyle = "#35373c"; g.fillRect(0, 0, w, h);
+const asphaltTex = canvasTex(512, 1024, (g, w, h) => { g.fillStyle = "#2c2d31"; g.fillRect(0, 0, w, h);
   for (let i = 0; i < 60000; i++) { const v = 38 + Math.random() * 46 | 0; g.fillStyle = `rgba(${v},${v},${v + 3},${0.35 + Math.random() * 0.4})`; g.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 1.6, 1 + Math.random() * 1.6); }
   for (let i = 0; i < 26; i++) { g.strokeStyle = "rgba(22,23,26,0.35)"; g.lineWidth = 1 + Math.random() * 2; g.beginPath(); let x = Math.random() * w, y = Math.random() * h; g.moveTo(x, y); for (let k = 0; k < 6; k++) { x += (Math.random() - 0.5) * 30; y += Math.random() * 40; g.lineTo(x, y); } g.stroke(); }   // sealed cracks
   g.fillStyle = "#f3f3f1"; g.fillRect(6, 0, 9, h); g.fillRect(w - 15, 0, 9, h); }, true);
@@ -655,7 +656,7 @@ const ENV = { tex: null };
 // the circuit's footprint: its centre and size, for the scenery around it
 const CEN = (() => { let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9; for (const p of PTS) { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z); } return { x: (x0 + x1) / 2, z: (z0 + z1) / 2, x0, x1, z0, z1 }; })();
 // sand, with wind ripples (or grass in the park)
-const sandTex = PARK ? canvasTex(512, 512, (g, w, h) => { g.fillStyle = "#5c8a3e"; g.fillRect(0, 0, w, h);   // the park: mown grass
+const sandTex = PARK ? canvasTex(512, 512, (g, w, h) => { g.fillStyle = "#4f6f37"; g.fillRect(0, 0, w, h);   // the park: mown grass
   for (let i = 0; i < 30000; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? "rgba(70,110,45,0.4)" : "rgba(120,160,80,0.35)"; g.fillRect(Math.random() * w, Math.random() * h, 1.6, 1.6); }
   for (let i = 0; i < 40; i++) { g.fillStyle = "rgba(60,95,40,0.18)"; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, 10 + Math.random() * 30, 0, 7); g.fill(); } }, true) : canvasTex(512, 512, (g, w, h) => { g.fillStyle = "#d7bd94"; g.fillRect(0, 0, w, h);
   for (let i = 0; i < 26000; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? "rgba(180,150,110,0.35)" : "rgba(240,222,190,0.35)"; g.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5); }
@@ -663,7 +664,7 @@ const sandTex = PARK ? canvasTex(512, 512, (g, w, h) => { g.fillStyle = "#5c8a3e
 sandTex.repeat.set(220, 220);
 { const g = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.MeshLambertMaterial({ map: sandTex })); g.receiveShadow = true; g.rotation.x = -Math.PI / 2; g.position.set(CEN.x, -0.06, CEN.z); scene.add(g); }
 // landscaped turf between the track and the barriers (where there is no painted run-off or gravel)
-{ const turf = canvasTex(256, 256, (g, w, h) => { g.fillStyle = "#4f8f3c"; g.fillRect(0, 0, w, h); for (let i = 0; i < 5000; i++) { g.fillStyle = Math.random() < 0.5 ? "rgba(62,120,46,0.5)" : "rgba(104,160,70,0.45)"; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); } for (let y = 0; y < h; y += 64) { g.fillStyle = "rgba(255,255,255,0.05)"; g.fillRect(0, y, w, 32); } }, true);
+{ const turf = canvasTex(256, 256, (g, w, h) => { g.fillStyle = "#467a33"; g.fillRect(0, 0, w, h); for (let i = 0; i < 5000; i++) { g.fillStyle = Math.random() < 0.5 ? "rgba(62,120,46,0.5)" : "rgba(82,118,56,0.4)"; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); } for (let y = 0; y < h; y += 64) { g.fillStyle = "rgba(255,255,255,0.05)"; g.fillRect(0, y, w, 32); } }, true);
   const tm = new THREE.MeshLambertMaterial({ map: turf, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
   ribbon(HW + 0.2, (k) => RUN_R[k] - 0.5, 0.015, tm, 3, 1 / 12).receiveShadow = true;
   ribbon((k) => -RUN_L[k] + 0.5, -HW - 0.2, 0.015, tm, 3, 1 / 12).receiveShadow = true; }

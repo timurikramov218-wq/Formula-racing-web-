@@ -271,6 +271,18 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
 @media (max-width: 700px) { #setup .grid2 { grid-template-columns: 1fr; } }
 .dash .leds { gap: 3px; } .dash .leds i { height: 4px; border-radius: 1px; }
 .dash .spd { font-size: 40px; } .dash .gear { font-size: 40px; }
+/* career */
+#career { background: rgba(8,8,10,0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); place-items: start center; }
+#career .cwrap { width: min(980px, 100%); margin: 0 auto; justify-self: center; }
+.cgrid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 14px; margin-bottom: 90px; } .cgrid > div { background: rgba(255,255,255,0.045); border-radius: 8px; padding: 14px 16px; }
+.cgrid h4 { margin: 0 0 10px; font-size: 11px; letter-spacing: 0.14em; color: var(--fg3); font-weight: 700; }
+.ccal { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; } .ccal li { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 6px; background: rgba(255,255,255,0.04); font-weight: 700; }
+.ccal li i { font-style: normal; color: var(--fg3); font-weight: 900; } .ccal li small { color: var(--fg3); font-weight: 600; } .ccal li.next { background: #e10600; } .ccal li.next small, .ccal li.next i { color: #fff; } .ccal li.done b { color: var(--fg2); }
+.cst { width: 100%; border-collapse: collapse; font-size: 14px; } .cst td { padding: 6px 6px; border-bottom: 1px solid var(--line); } .cst td:first-child { color: var(--fg3); width: 26px; font-weight: 700; } .cst td:last-child { text-align: right; font-weight: 900; font-style: italic; }
+.cst tr.me td { color: #fff; background: rgba(225,6,0,0.25); } .cst .tm { display: inline-block; width: 3px; height: 12px; margin-right: 8px; vertical-align: -1px; }
+#career .cgo { position: fixed; left: 0; right: 0; bottom: 0; justify-content: center; padding: 14px 20px max(14px, env(safe-area-inset-bottom)); background: linear-gradient(180deg, rgba(8,8,10,0), rgba(8,8,10,0.95) 35%); }
+#career .cgo .btn { clip-path: none; border-radius: 6px; } #career .cgo .btn.alt { box-shadow: inset 0 0 0 1px var(--line2); }
+@media (max-width: 700px) { .cgrid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -332,6 +344,7 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
   <div class="hbar"><div class="hlogo"><b>FORMULA RACING</b><i>WEB</i></div>
     <div class="hprof"><span class="hcol" id="hpCol"></span><div><b id="hpName">DRIVER</b><small id="hpTeam">TEAM</small></div><div class="hstat"><small>WINS</small><b id="hpWins">0</b></div></div></div>
   <nav class="hmenu" id="hMenu" aria-label="Main menu">
+    <button type="button" id="bCareer" data-sub="Сезон из пяти этапов: очки, таблица чемпионата, титул"><span>КАРЬЕРА</span></button>
     <button type="button" id="bStart" data-sub="Квалификация, гонка, пит-стопы и радио"><span>ГРАН-ПРИ</span></button>
     <button type="button" id="bTT" data-sub="Один на трассе, лучший круг и призрак"><span>ЗАЕЗД НА ВРЕМЯ</span></button>
     <button type="button" id="bGar" data-sub="Команды, ливреи, гонщики"><span>ГАРАЖ</span></button>
@@ -356,7 +369,7 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
     <p class="eyebrow" id="sTeam">RACE WEEKEND</p>
     <h1 class="logo stitle">RACE SETUP</h1>
     <div class="grid2">
-      <div class="opt"><h3>CIRCUIT</h3><div class="seg" id="sTrack"><button data-v="yas">Yas Marina</button><button data-v="monza">Monza</button><button data-v="silverstone">Silverstone</button><button data-v="spielberg">Spielberg</button></div></div>
+      <div class="opt"><h3>CIRCUIT</h3><div class="seg" id="sTrack"><button data-v="yas">Yas Marina</button><button data-v="monza">Monza</button><button data-v="silverstone">Silverstone</button><button data-v="spielberg">Spielberg</button><button data-v="melbourne">Albert Park</button></div></div>
       <div class="opt"><h3>MODE</h3><div class="seg" data-k="mode"><button data-v="race">Race weekend</button><button data-v="tt">Time trial</button></div></div>
       <div class="opt race-only"><h3>QUALIFYING</h3><div class="seg" data-k="quali"><button data-v="on">One flying lap</button><button data-v="off">Skip</button></div></div>
       <div class="opt race-only noquali"><h3>START FROM</h3><div class="seg" data-k="grid"><button data-v="back">Back</button><button data-v="mid">Middle</button><button data-v="pole">Pole</button></div></div>
@@ -383,6 +396,13 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
   <div class="card" style="width:min(420px,100%)">
     <p class="eyebrow">RACE CONTROL</p><h1 class="logo" style="font-size:34px">PAUSED</h1>
     <div class="go"><button class="btn" id="bResume" type="button">RESUME</button><button class="btn alt" id="bRestart" type="button">RESTART</button><button class="btn alt" id="bQuit" type="button">MENU</button></div>
+  </div>
+</div>
+<div class="screen" id="career" hidden>
+  <div class="card cwrap">
+    <p class="eyebrow" id="cEyebrow">CAREER · SEASON 2026</p><h1 class="logo stitle" id="cTitle">КАРЬЕРА</h1>
+    <div class="cgrid"><div><h4>КАЛЕНДАРЬ</h4><ol class="ccal" id="cCal"></ol></div><div><h4>ЧЕМПИОНАТ ПИЛОТОВ</h4><table class="cst" id="cStand"></table></div></div>
+    <div class="go cgo"><button class="btn alt" id="cBack" type="button">МЕНЮ</button><button class="btn alt" id="cReset" type="button">НОВЫЙ СЕЗОН</button><button class="btn" id="cNext" type="button">СЛЕДУЮЩИЙ ЭТАП</button></div>
   </div>
 </div>
 <div class="screen results" id="results" hidden>
@@ -415,6 +435,8 @@ const TRACKS = {
     sub: "Sunset over the desert, a kilometre-long back straight between two hairpins, then the marina and the hotel." },
   monza: { id: "monza", name: "Monza", km: "5.77", env: "park", smooth: [2, 3], cp: [[0,0],[37,-426],[53,-605],[55,-613],[60,-617],[66,-618],[74,-617],[82,-616],[89,-617],[93,-620],[97,-626],[98,-630],[98,-635],[72,-733],[68,-760],[67,-784],[69,-810],[78,-937],[82,-958],[87,-977],[94,-998],[103,-1020],[113,-1042],[129,-1067],[145,-1087],[167,-1110],[190,-1130],[217,-1149],[245,-1165],[277,-1181],[308,-1192],[343,-1201],[383,-1208],[424,-1212],[582,-1225],[775,-1237],[787,-1238],[793,-1241],[798,-1246],[804,-1269],[807,-1275],[812,-1279],[819,-1282],[846,-1287],[874,-1293],[915,-1306],[1096,-1366],[1112,-1370],[1126,-1370],[1141,-1367],[1151,-1363],[1161,-1357],[1170,-1351],[1181,-1339],[1188,-1329],[1192,-1317],[1195,-1303],[1202,-1218],[1217,-1072],[1217,-1059],[1214,-1050],[1211,-1043],[1205,-1038],[1194,-1031],[1075,-967],[979,-913],[919,-881],[890,-864],[857,-841],[834,-823],[813,-805],[708,-716],[634,-649],[476,-511],[381,-428],[368,-415],[363,-407],[362,-398],[362,-388],[366,-367],[366,-355],[366,-337],[365,-328],[361,-316],[356,-302],[347,-288],[334,-273],[320,-261],[308,-252],[302,-246],[298,-236],[294,-219],[284,-140],[274,-56],[196,696],[192,723],[189,736],[183,749],[174,759],[164,769],[149,778],[134,784],[116,787],[101,786],[86,783],[70,776],[54,769],[42,761],[27,750],[11,733],[0,717],[-10,700],[-18,681],[-26,659],[-32,636],[-34,617],[-38,588],[-38,559],[-39,531],[-40,476],[-41,428],[-40,376],[-34,308],[-11,92]],
     sub: "The temple of speed: flat out through the royal park, three chicanes, the Lesmos, and the long Parabolica onto the straight." },
+  melbourne: { id: "melbourne", name: "Albert Park", km: "5.28", env: "park", smooth: [2, 3], cp: [[0,0],[-89,-88],[-222,-222],[-229,-230],[-233,-240],[-232,-245],[-230,-249],[-225,-260],[-218,-273],[-213,-290],[-211,-311],[-210,-326],[-215,-355],[-221,-370],[-230,-386],[-240,-399],[-264,-422],[-292,-447],[-331,-485],[-379,-536],[-398,-557],[-450,-620],[-475,-654],[-501,-695],[-552,-783],[-564,-808],[-572,-826],[-571,-836],[-567,-844],[-556,-849],[-520,-855],[-453,-869],[-445,-872],[-440,-875],[-437,-880],[-432,-894],[-431,-910],[-435,-1041],[-437,-1088],[-436,-1093],[-421,-1109],[-408,-1119],[-308,-1191],[-286,-1204],[-182,-1246],[-143,-1260],[-108,-1281],[-81,-1297],[-69,-1299],[-59,-1299],[-50,-1294],[-39,-1281],[-24,-1268],[-5,-1255],[20,-1245],[52,-1242],[80,-1240],[105,-1237],[132,-1227],[156,-1216],[183,-1196],[201,-1180],[218,-1157],[235,-1128],[245,-1099],[250,-1076],[253,-1057],[278,-926],[278,-909],[275,-889],[269,-869],[261,-852],[247,-833],[235,-817],[221,-799],[214,-785],[208,-770],[203,-753],[176,-608],[174,-590],[173,-569],[173,-550],[174,-515],[178,-488],[186,-457],[195,-427],[207,-401],[220,-377],[240,-345],[254,-324],[282,-295],[374,-214],[388,-203],[402,-195],[412,-190],[431,-185],[450,-183],[473,-184],[493,-184],[513,-185],[530,-184],[544,-181],[559,-174],[569,-168],[586,-153],[688,-67],[725,-35],[744,-13],[758,2],[773,26],[788,61],[803,105],[843,242],[867,330],[871,354],[874,367],[874,374],[868,377],[849,385],[759,421],[666,458],[658,460],[647,461],[633,460],[618,454],[603,444],[595,436],[586,423],[531,322],[498,268],[493,261],[489,257],[484,255],[476,255],[470,258],[410,326],[402,334],[393,339],[382,343],[372,346],[363,346],[352,344],[337,338],[326,331],[322,326]],
+    sub: "Round the lake in a Melbourne park: quick, flowing street-style corners and a fast final chicane." },
   spielberg: { id: "spielberg", name: "Spielberg", km: "4.32", env: "park", smooth: [2, 3], cp: [[0,0],[-86,23],[-300,81],[-315,82],[-325,73],[-341,41],[-394,-29],[-451,-110],[-495,-180],[-536,-250],[-603,-395],[-621,-433],[-649,-479],[-693,-531],[-765,-603],[-831,-669],[-835,-678],[-835,-688],[-827,-692],[-810,-695],[-755,-702],[-701,-704],[-644,-703],[-591,-698],[-528,-688],[-338,-652],[-251,-640],[-64,-632],[-49,-627],[-39,-617],[-36,-605],[-37,-593],[-42,-582],[-60,-555],[-75,-538],[-102,-514],[-132,-497],[-169,-485],[-208,-479],[-249,-482],[-409,-507],[-430,-505],[-448,-498],[-463,-488],[-477,-474],[-485,-457],[-490,-439],[-490,-422],[-488,-404],[-483,-391],[-405,-256],[-392,-242],[-372,-229],[-348,-224],[-325,-226],[-301,-236],[-286,-248],[-271,-266],[-257,-285],[-242,-300],[-223,-313],[-202,-325],[-172,-336],[-140,-343],[107,-348],[298,-353],[318,-353],[338,-346],[354,-334],[367,-318],[377,-296],[416,-166],[418,-154],[416,-145],[411,-138],[396,-126],[376,-114],[350,-101],[320,-89],[286,-77]],
     sub: "The easy one: a short, fast lap in the Styrian hills, long uphill straights and only ten corners." },
   silverstone: { id: "silverstone", name: "Silverstone", km: "5.89", env: "park", smooth: [2, 3], cp: [[0,0],[187,-16],[220,-14],[245,-6],[262,5],[282,28],[294,54],[305,87],[319,143],[333,197],[342,258],[345,296],[350,388],[352,467],[356,498],[367,526],[390,567],[399,589],[399,607],[394,627],[363,710],[361,743],[366,767],[377,788],[408,831],[415,851],[416,874],[411,895],[392,919],[368,936],[334,955],[309,971],[290,988],[269,1023],[228,1100],[1,1516],[-74,1631],[-95,1659],[-112,1674],[-132,1684],[-152,1689],[-171,1688],[-192,1683],[-210,1675],[-226,1663],[-239,1643],[-243,1635],[-264,1591],[-286,1552],[-311,1520],[-327,1500],[-346,1480],[-379,1446],[-452,1359],[-459,1355],[-469,1354],[-479,1358],[-510,1386],[-521,1390],[-531,1388],[-540,1385],[-553,1373],[-566,1359],[-583,1337],[-595,1314],[-603,1290],[-611,1263],[-611,1252],[-609,1241],[-603,1231],[-589,1208],[-365,918],[-315,854],[-305,842],[-286,830],[-264,825],[-247,824],[-222,826],[-153,836],[-130,839],[-107,840],[-80,836],[-56,830],[-34,818],[109,706],[118,699],[129,694],[141,693],[150,696],[158,703],[163,711],[187,796],[194,808],[204,815],[216,816],[229,810],[237,800],[243,789],[253,761],[261,738],[267,715],[270,692],[272,669],[271,644],[266,633],[253,619],[-209,200],[-221,192],[-239,183],[-260,180],[-283,183],[-305,194],[-313,204],[-319,218],[-328,294],[-334,310],[-345,323],[-362,331],[-381,334],[-401,328],[-416,318],[-425,307],[-432,293],[-433,279],[-430,263],[-419,238],[-359,120],[-340,98],[-321,79],[-295,56],[-273,41],[-245,30],[-221,22],[-171,16]],
@@ -1245,9 +1267,9 @@ function stepCar(car, dt, inp, assist) {
   const v = car.v;
   // braking help: lifts and brakes for you when you arrive far too fast at a corner
   let thr = inp.thr, brk = inp.brk;
-  if (assist) { const want = vAt(car.s + Math.max(20, v * 0.9)) * 1.03; if (v > want + 2) { thr = Math.min(thr, 0.15); brk = Math.max(brk, clamp((v - want) / 12, 0.35, 1)); } }
+  if (assist) { const want = vAt(car.s + Math.max(24, v * 1.05)) * 1.02; if (v > want + 2) { thr = Math.min(thr, 0.15); brk = Math.max(brk, clamp((v - want) / 12, 0.35, 1)); } }
   // (no automatic brake release while steering: you brake as hard as you press; the tyres share their grip between braking and turning below)
-  car.thr = lerp(car.thr, thr, Math.min(1, dt * 10)); car.brk = lerp(car.brk, brk, Math.min(1, dt * 14));
+  car.thr = lerp(car.thr, thr, Math.min(1, dt * 10)); car.brk = lerp(car.brk, brk, Math.min(1, dt * (car.isPlayer ? 22 : 14)));
   const sens = car.isPlayer ? +SET.sens || 1 : 1, sMax = steerMax(v) * (0.55 + 0.45 * sens);
   // keys and buttons are all-or-nothing: the wheel winds on gently (and comes back a little quicker)
   const rate = car.isPlayer ? (Math.abs(inp.steer) < Math.abs(car.steer) || inp.steer * car.steer < 0 ? 5.5 : 3.4) * sens : 6;
@@ -1258,7 +1280,7 @@ function stepCar(car, dt, inp, assist) {
   const surf = surfaceAt(car), mu = PH.mu * GRIP[surf] * tyreGrip(car) * (1 - 0.16 * wingF - 0.12 * D.rw - 0.08 * side), down = PH.g + DFc * (1 - 0.3 * wingF - 0.38 * D.rw) * v * v, gripA = mu * down;
   // longitudinal
   const drs = car.drsOpen;
-  let ax = car.thr * Math.min(PH.P * (1 - 0.22 * side) / (PH.m * Math.max(v, 4)), gripA * 0.62) - car.brk * gripA * 0.95 - DRc * (drs ? 0.78 : 1) * v * v - ROLL[surf] * (v > 1 ? 1 : v);
+  let ax = car.thr * Math.min(PH.P * (1 - 0.22 * side) / (PH.m * Math.max(v, 4)), gripA * 0.62) - car.brk * gripA * (car.isPlayer ? 1.08 : 0.95) - DRc * (drs ? 0.78 : 1) * v * v - ROLL[surf] * (v > 1 ? 1 : v);
   // lateral: the nose turns at the rate the front wheels ask for (a little more than grip allows when you overdo it);
   // the direction of travel follows only as fast as the tyres' grip lets it: the difference is the slide
   const pull = (D.fr - D.fl) * 0.07 + (D.sr - D.sl) * 0.09, delta = (car.steer + pull) * sMax, wantYaw = v * Math.tan(delta) / PH.L, latLeft = gripA * Math.sqrt(Math.max(0.45, 1 - (ax / (gripA * 1.05)) ** 2));
@@ -2066,19 +2088,45 @@ function showResults() {
     const time = o.dnf ? "DNF" : i === 0 ? fmt(o.finishT || raceT) : o.finished ? `+${(o.finishT - lead.finishT).toFixed(3)}` : (() => { const g = gapTo(lead, o); return g === null ? "—" : `+${g.toFixed(1)}`; })();
     tr.innerHTML = `<td>${i + 1}</td><td>${o.name} <span style="color:var(--fg3)">#${o.num}</span></td><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${o.team.c1};margin-right:6px"></span>${o.team.name}</td><td>${time}</td><td${FL.car === o ? ' style="color:var(--purple)"' : ""}>${fmt(o.bestLap)}</td><td>${o.stops}</td>`; tb.append(tr); });
   $("pitMenu").hidden = true; RADIO.reset();
-  const wins = store.get("wins", 0); if (pos === 1) store.set("wins", wins + 1);
+  const wins = store.get("wins", 0); if (pos === 1) store.set("wins", wins + 1); careerScore();
   $("results").hidden = false;
 }
 function togglePause() { if (phase === "menu" || phase === "results") return; paused = !paused; $("pause").hidden = !paused; if (!paused) last = performance.now(); }
 // ---- the menu: title → garage → race setup → (qualifying) → race ----
 let menuStep = "title";
 function showStep(step) {
-  menuStep = step; phase = "menu"; for (const id of ["menu", "garage", "setup", "qres", "results", "pause", "hud", "touch", "topBtns", "pitMenu"]) $(id).hidden = true;
+  menuStep = step; phase = "menu"; for (const id of ["menu", "garage", "setup", "qres", "results", "pause", "hud", "touch", "topBtns", "pitMenu", "career"]) $(id).hidden = true; if (step === "career") $("career").hidden = false;
   if (step === "title") { $("menu").hidden = false; syncHome(); } if (step === "garage") { $("garage").hidden = false; GAR.show(GAR.idx); } if (step === "setup") { $("setup").hidden = false; syncSetup(); }
 }
-function toMenu() { paused = false; clearCars(); player = null; inQuali = false; RADIO.reset(); $("pitMenu").hidden = true; showStep("title"); if (eng) eng.g.gain.value = 0; }
+// ================= CAREER =================
+// a five-round season with your team: qualifying and race at each round, points 25-18-15-12-10-8-6-4-2-1, the drivers' championship
+const CAL = ["melbourne", "spielberg", "silverstone", "monza", "yas"], POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+let CAREER_ON = false;
+const career = () => store.get("career", null) || { round: 0, pts: {}, res: [] };
+const dKey = (c) => c.teamIdx + "-" + Math.max(0, c.drv);
+function showCareer() {
+  const C = career(); showStep("career"); const done = C.round >= CAL.length;
+  $("cTitle").textContent = done ? "СЕЗОН ЗАВЕРШЁН" : `ЭТАП ${C.round + 1} ИЗ ${CAL.length}`;
+  $("cCal").innerHTML = CAL.map((id, k) => { const T = TRACKS[id], r = C.res[k]; return `<li class="${k < C.round ? "done" : k === C.round ? "next" : ""}"><i>${k + 1}</i><b>${T.name}</b><small>${r ? (r.dnf ? "DNF" : "P" + r.pos + " · +" + r.pts) : k === C.round ? "ДАЛЕЕ" : T.km + " KM"}</small></li>`; }).join("");
+  const rows = []; TEAMS.forEach((t, ti) => t.drivers.forEach((d, k) => rows.push({ key: ti + "-" + k, t, d, me: ti === +SET.team && k === 0, p: C.pts[ti + "-" + k] || 0 })));
+  rows.sort((a, b) => b.p - a.p); const meI = rows.findIndex((r) => r.me), show = rows.slice(0, 10); if (meI >= 10) show.push(rows[meI]);
+  $("cStand").innerHTML = show.map((r) => `<tr class="${r.me ? "me" : ""}"><td>${rows.indexOf(r) + 1}</td><td><span class="tm" style="background:${r.t.c1}"></span>${r.d[2]}</td><td>${r.p}</td></tr>`).join("");
+  if (done) { const champ = rows[0]; $("cEyebrow").textContent = `CHAMPION · ${champ.d[2].toUpperCase()}${champ.me ? " — ЭТО ТЫ!" : ""}`; } else $("cEyebrow").textContent = "CAREER · SEASON 2026";
+  $("cNext").hidden = done; }
+function careerNext() { const C = career(); if (C.round >= CAL.length) return; const id = CAL[C.round];
+  if (TRACK.id !== id) { SET.track = id; store.set("set", SET); store.set("resume", Date.now()); store.set("resumeTo", "career-race"); $("bootTxt").textContent = `LOADING ${TRACKS[id].name.toUpperCase()}`; $("boot").hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => location.reload())); return; }
+  CAREER_ON = true; SET.mode = "race"; SET.quali = "on"; startWeekend(); }
+function careerScore() {   // after a career race: points for everyone, the round ticks over
+  if (!CAREER_ON) return; CAREER_ON = false; const C = career(), ord = order();
+  ord.forEach((c, i) => { if (c.dnf || i >= POINTS.length) return; C.pts[dKey(c)] = (C.pts[dKey(c)] || 0) + POINTS[i]; });
+  const me = ord.indexOf(player); C.res[C.round] = { pos: me + 1, dnf: player.dnf, pts: player.dnf || me >= POINTS.length ? 0 : POINTS[me] }; C.round++; store.set("career", C);
+  $("bAgain").textContent = "КАРЬЕРА"; $("rSub").textContent += ` · очки: +${C.res[C.round - 1].pts}`; }
+$("bCareer").onclick = () => { audioStart(); showCareer(); };
+$("cBack").onclick = () => showStep("title"); $("cNext").onclick = () => careerNext();
+$("cReset").onclick = () => { if (confirm("Начать новый сезон? Очки текущего сезона пропадут.")) { store.set("career", null); showCareer(); } };
+function toMenu() { CAREER_ON = false; paused = false; clearCars(); player = null; inQuali = false; RADIO.reset(); $("pitMenu").hidden = true; showStep("title"); if (eng) eng.g.gain.value = 0; }
 $("bResume").onclick = togglePause; $("bRestart").onclick = () => { paused = false; if (inQuali) setupRace({ quali: true }); else setupRace(); }; $("bQuit").onclick = toMenu;
-$("bAgain").onclick = () => startWeekend(); $("bMenu").onclick = toMenu;
+$("bAgain").onclick = () => { if ($("bAgain").textContent === "КАРЬЕРА") { $("bAgain").textContent = "RACE AGAIN"; clearCars(); player = null; showCareer(); } else startWeekend(); }; $("bMenu").onclick = toMenu;
 $("bPause").onclick = togglePause; $("bCam").onclick = cycleCam; $("bLine").onclick = toggleLine; $("bSkip").onclick = () => finishQuali(null);
 // main menu: modes on the left (arrow keys or tap), circuits as tiles
 $("bStart").onclick = () => { audioStart(); SET.mode = "race"; store.set("set", SET); GAR.idx = +SET.team || 0; showStep("garage"); };
@@ -2158,7 +2206,7 @@ $("sTrack").querySelectorAll("button").forEach((b) => { b.setAttribute("aria-pre
   b.addEventListener("click", () => { if (b.dataset.v === TRACK.id) return; SET.track = b.dataset.v; store.set("set", SET); store.set("resume", Date.now());
     $("bootTxt").textContent = `LOADING ${TRACKS[SET.track].name.toUpperCase()}`; $("boot").hidden = false;
     requestAnimationFrame(() => requestAnimationFrame(() => location.reload())); }); });   // let the loading screen show before the page goes
-{ const r = store.get("resume", 0); if (r) { store.set("resume", 0); if (Date.now() - r < 60000) { GAR.idx = +SET.team || 0; showStep("setup"); } } }
+{ const r = store.get("resume", 0), to = store.get("resumeTo", ""); if (r) { store.set("resume", 0); store.set("resumeTo", ""); if (Date.now() - r < 60000) { GAR.idx = +SET.team || 0; if (to === "career-race") { CAREER_ON = true; SET.mode = "race"; SET.quali = "on"; requestAnimationFrame(() => startWeekend()); } else showStep("setup"); } } }
 $("bootTxt").textContent = `LOADING ${TRACK.name.toUpperCase()}`;
 let bootFrames = 0; const bootDone = () => { if (++bootFrames < 3) { requestAnimationFrame(bootDone); return; } $("boot").hidden = true; }; requestAnimationFrame(bootDone);
 requestAnimationFrame(frame);

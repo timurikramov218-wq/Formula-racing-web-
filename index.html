@@ -572,7 +572,7 @@ ribbon(HW + 1.6 + PAINT, (k) => RUN_R[k] - 1, 0.025, gravelMat, 4, 1 / 8, (k) =>
 ribbon((k) => -RUN_L[k] + 1, -HW - 1.6 - PAINT, 0.025, gravelMat, 4, 1 / 8, (k) => GRAV_L[k]);
 // barriers: armco on posts, tyre walls in front where the runoff is gravel
 const wallTex = canvasTex(128, 32, (g, w, h) => { g.fillStyle = "#d9dbdd"; g.fillRect(0, 0, w, h); for (let k = 0; k < 600; k++) { g.fillStyle = "rgba(120,120,125,0.12)"; g.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5); } g.fillStyle = "rgba(0,0,0,0.25)"; g.fillRect(w - 2, 0, 2, h); g.fillStyle = "#1c3fae"; g.fillRect(0, h - 6, w / 2, 6); g.fillStyle = "#c8202a"; g.fillRect(w / 2, h - 6, w / 2, 6); }, true);   // concrete blocks with a blue and red foot
-const PITWALL = [], GARAGES = [];   // (the garages are furnished once the cars and the crew can be built)   // the teams' stands on the pit wall (their engineers are seated once the crew can be built)
+const PITWALL = [], GARAGES = [], PIT_EXIT_LIGHTS = [];   // (the garages are furnished once the cars and the crew can be built)   // the teams' stands on the pit wall (their engineers are seated once the crew can be built)
 // the pit lane runs beside the start-finish straight on the right: an entry ramp, the garages, an exit ramp
 const PIT = { s0: -10, L: 330 }; PIT.boxA = PIT.s0 - PIT.L / 2; PIT.boxB = PIT.s0 + PIT.L / 2; PIT.entry = PIT.boxA - 80; PIT.exit = PIT.boxB + 75;
 let PIT_RS = 22;   // the barrier's offset beside the garages (set once the run-off is known)
@@ -598,10 +598,11 @@ wall((k) => RUN_R[k], 1); wall((k) => RUN_L[k], -1);
   for (const [fn, sg] of [[(k) => RUN_R[k], 1], [(k) => RUN_L[k], -1]]) {
     const pos = [], uv = [], idx = []; let vacc = 0;
     for (let i = 0; i <= N; i++) { const k = i % N, p = PTS[k], r = R[k], o = sg * (fn(k) + 0.15); pos.push(p.x + r.x * o, 1.1, p.z + r.z * o, p.x + r.x * o, 4.4, p.z + r.z * o); uv.push(vacc / 1.6, 0, vacc / 1.6, 2); vacc += DS;
-      if (i < N && !(sg > 0 && pitGap(k))) { const b = i * 2; idx.push(b, b + 1, b + 2, b + 1, b + 3, b + 2); } }
+      if (i < N && !(sg > 0 && inPitZone(k))) {   // no debris fence along the pit lane: only the low pit wall
+        const b = i * 2; idx.push(b, b + 1, b + 2, b + 1, b + 3, b + 2); } }
     const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
     const m = new THREE.Mesh(g, fm); m.renderOrder = 3; scene.add(m); }
-  const posts = [], v = new THREE.Vector3(); for (let i = 0; i < N; i += 2) for (const sg of [-1, 1]) { if (sg > 0 && pitGap(i)) continue; pointAt(i * DS, sg * ((sg > 0 ? RUN_R[i] : RUN_L[i]) + 0.15), v); posts.push([v.x, v.z]); }
+  const posts = [], v = new THREE.Vector3(); for (let i = 0; i < N; i += 2) for (const sg of [-1, 1]) { if (sg > 0 && inPitZone(i)) continue; pointAt(i * DS, sg * ((sg > 0 ? RUN_R[i] : RUN_L[i]) + 0.15), v); posts.push([v.x, v.z]); }
   const pg = new THREE.CylinderGeometry(0.06, 0.06, 3.4, 5); pg.translate(0, 2.75, 0); const im = new THREE.InstancedMesh(pg, new THREE.MeshStandardMaterial({ color: 0x8b939d, metalness: 0.5, roughness: 0.5 }), posts.length), m4 = new THREE.Matrix4();
   posts.forEach(([x, z], k) => { m4.makeTranslation(x, 0, z); im.setMatrixAt(k, m4); }); scene.add(im); }
 // racing line (assist): green where you accelerate, red where you brake
@@ -881,6 +882,11 @@ else { const dm = new THREE.MeshLambertMaterial({ color: 0xcfae84 });
     const glass = new THREE.Mesh(new THREE.PlaneGeometry(L, 4.2), new THREE.MeshStandardMaterial({ color: 0x1d3150, roughness: 0.12, metalness: 0.7 })); glass.rotation.y = -Math.PI / 2; glass.position.set(-0.05, 8.4, 0); g.add(glass);
     const mull = []; for (let z = -L / 2; z <= L / 2; z += 3) mull.push(bx(0.2, 4.2, 0.12, -0.12, 8.4, z)); mull.push(bx(0.3, 0.3, L, -0.15, 6.2, 0), bx(0.3, 0.3, L, -0.15, 10.6, 0)); g.add(new THREE.Mesh(mergeG(mull), steelM));
     const lip = new THREE.Mesh(new THREE.BoxGeometry(4, 0.4, L + 2), roofMat); lip.position.set(-1.6, H + 0.1, 0); g.add(lip);
+    // a canopy over the working lane in front of the garages, lit from below, with a monitor hanging in front of each box
+    { const can = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.35, L), new THREE.MeshStandardMaterial({ color: 0x2a2d33, roughness: 0.6 })); can.position.set(-3.75, GH + 0.15, 0); can.castShadow = true; g.add(can);
+      const strip = []; for (let z = -L / 2 + 4; z < L / 2; z += 8) strip.push(bx(5.5, 0.05, 0.35, -3.6, GH - 0.06, z)); g.add(new THREE.Mesh(mergeG(strip), new THREE.MeshBasicMaterial({ color: 0xf4f8ff })));
+      const mon = [], scr = []; for (let k = 0; k < 20; k++) { const z = -L / 2 + (L / 20) * (k + 0.5); mon.push(bx(0.12, 0.7, 1.2, -5.2, GH - 0.75, z), bx(0.05, 0.5, 0.05, -5.2, GH - 0.2, z)); scr.push(bx(0.02, 0.6, 1.1, -5.27, GH - 0.75, z)); }
+      g.add(new THREE.Mesh(mergeG(mon), new THREE.MeshStandardMaterial({ color: 0x111215 })), new THREE.Mesh(mergeG(scr), new THREE.MeshBasicMaterial({ color: 0x3d6fb8 }))); }
     // twenty garages, two per team: team-coloured walls, a sign over the door with the name and number, light panels, tyre stacks, tool chests
     const gw = L / 20, walls = [], lights = [], chests = [], tyres = [], tyreG = new THREE.CylinderGeometry(0.34, 0.34, 0.36, 16); tyreG.translate(0, 0.18, 0);
     const lightM = new THREE.MeshBasicMaterial({ color: 0xf4f8ff }), tyreM = new THREE.MeshStandardMaterial({ color: 0x141416, roughness: 0.9 });
@@ -908,7 +914,7 @@ else { const dm = new THREE.MeshLambertMaterial({ color: 0xcfae84 });
       const ti = new THREE.InstancedMesh(tyreG, tyreM, tyres.length); tyres.forEach(([x, y, z], k) => { m4.makeTranslation(x, y, z); ti.setMatrixAt(k, m4); }); g.add(ti); }
     scene.add(g);
     // pit lane and pit wall
-    const lane = ribbon((k) => RUN_R[k] + 0.6, (k) => RUN_R[k] + 14.8, 0.02, roadMat, 1, 1 / 32, (k) => { let d = k * DS - s0; d -= Math.round(d / TL) * TL; return Math.abs(d) < L / 2 && Math.abs(KW[k]) < 0.002; }); lane.receiveShadow = true;
+    const lane = ribbon((k) => RUN_R[k] + 0.6, (k) => RUN_R[k] + 14.8, 0.02, roadMat, 1, 1 / 32, (k) => { let d = k * DS - s0; d -= Math.round(d / TL) * TL; return Math.abs(d) < L / 2 + 4; }); lane.receiveShadow = true;
     ribbon((k) => RUN_R[k] + 7.5, (k) => RUN_R[k] + 7.75, 0.05, new THREE.MeshBasicMaterial({ color: 0xf2f2f2 }), 1, 1, (k) => { let d = k * DS - s0; d -= Math.round(d / TL) * TL; return Math.abs(d) < L / 2 && Math.floor((k * DS) / 4) % 2 === 0; });
     const RS = PIT_RS, uIn = (k) => sm01((pitRel(k * DS) - PIT.entry) / (PIT.boxA + 12 - PIT.entry)), uOut = (k) => sm01((pitRel(k * DS) - PIT.boxB + 12) / (PIT.exit - PIT.boxB + 12));
     ribbon((k) => HW + 0.3, (k) => lerp(RUN_R[k] + 2, RS + 14.8, uIn(k)), 0.035, roadMat, 1, 1 / 32, (k) => { const q = pitRel(k * DS); return q > PIT.entry - 6 && q < PIT.boxA + 14; }).receiveShadow = true;
@@ -934,6 +940,17 @@ else { const dm = new THREE.MeshLambertMaterial({ color: 0xcfae84 });
         const fas = canvasTex(512, 48, (c, w, h) => { c.fillStyle = t.c1; c.fillRect(0, 0, w, h); c.fillStyle = "#fff"; c.font = "26px Michroma, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(t.name.toUpperCase(), w / 2, h / 2 + 1, w - 20); });
         for (const sx of [1, -1]) { const f = new THREE.Mesh(new THREE.PlaneGeometry(7.4, 0.5), new THREE.MeshBasicMaterial({ map: fas })); f.rotation.y = sx > 0 ? Math.PI / 2 : -Math.PI / 2; f.position.set(sx * 1.32, 3.3 + sx * 0.08, 0); gs.add(f); }
         scene.add(gs); PITWALL.push({ g: gs, team: t }); }); }
+    // speed-limit boards at the limit lines and the pit exit light at the end of the lane
+    { const v2 = new THREE.Vector3(), post = new THREE.MeshStandardMaterial({ color: 0x9aa3ad, metalness: 0.6, roughness: 0.4 });
+      const sign = (txt, sub) => canvasTex(256, 256, (c, w, h) => { c.fillStyle = "#fff"; c.beginPath(); c.arc(w / 2, h / 2, 120, 0, 7); c.fill(); c.lineWidth = 26; c.strokeStyle = "#e10600"; c.beginPath(); c.arc(w / 2, h / 2, 106, 0, 7); c.stroke();
+        c.fillStyle = "#111"; c.font = "900 96px Titillium Web, Arial, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText(txt, w / 2, h / 2 - 6); if (sub) { c.font = "700 26px Titillium Web, Arial"; c.fillText(sub, w / 2, h / 2 + 58); } });
+      for (const [q, txt] of [[PIT.boxA - 4, "80"], [PIT.boxB + 4, "END"]]) { const ki = Math.round(((q + TL) % TL) / DS) % N, ang = Math.atan2(T[ki].x, T[ki].z); pointAt(q, PIT_RS + 15.6, v2);
+        const pl = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.6, 8), post); pl.position.set(v2.x, 1.3, v2.z); scene.add(pl);
+        const sg = new THREE.Mesh(new THREE.CircleGeometry(0.55, 32), new THREE.MeshBasicMaterial({ map: sign(txt === "END" ? "80" : txt, txt === "END" ? "END" : "km/h"), side: THREE.DoubleSide })); sg.position.set(v2.x, 2.75, v2.z); sg.rotation.y = ang + Math.PI; scene.add(sg); }
+      { const q = PIT.exit - 30, ki = Math.round(((q + TL) % TL) / DS) % N; pointAt(q, lerp(PIT_RS + 14.8, HW + 7, sm01((q - PIT.boxB + 12) / (PIT.exit - PIT.boxB + 12))) + 1, v2);
+        const pl = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 3.2, 8), post); pl.position.set(v2.x, 1.6, v2.z); scene.add(pl);
+        const hd = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.1, 0.4), new THREE.MeshStandardMaterial({ color: 0x111215 })); hd.position.set(v2.x, 3.5, v2.z); hd.rotation.y = Math.atan2(T[ki].x, T[ki].z); scene.add(hd);
+        PIT_EXIT_LIGHTS.length = 0; for (const [dy, c] of [[0.25, 0x400606], [-0.25, 0x0b3d1d]]) { const l = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 8), new THREE.MeshBasicMaterial({ color: c })); l.position.set(0, dy, 0.21); hd.add(l); PIT_EXIT_LIGHTS.push(l); } } }
     // white lines across the lane where the speed limit starts and ends
     for (const q of [PIT.boxA, PIT.boxB]) { const a = pointAt(q, RS + 7.7, new THREE.Vector3()), ki = Math.round(((q + TL) % TL) / DS) % N; const ln = new THREE.Mesh(new THREE.PlaneGeometry(14, 0.5), new THREE.MeshBasicMaterial({ color: 0xf2f2f2 })); ln.rotation.set(-Math.PI / 2, 0, Math.atan2(T[ki].x, T[ki].z)); ln.position.set(a.x, 0.06, a.z); scene.add(ln); }
   }
@@ -944,7 +961,7 @@ else { const dm = new THREE.MeshLambertMaterial({ color: 0xcfae84 });
     g.fillStyle = bg; g.fillRect(0, 0, W2, H); g.fillStyle = fg; g.font = "34px Michroma, sans-serif"; g.textBaseline = "middle"; g.textAlign = "center"; g.fillText(w, W2 / 2, H / 2 + 2, W2 - 30); }));
   const mats = boardTex.map((t) => new THREE.MeshLambertMaterial({ map: t })), bg = new THREE.PlaneGeometry(14, 1.75), v = new THREE.Vector3(); let n = 0;
   for (let i = 0; i < N; i += 5) { if (Math.abs(KW[i]) > 0.0012 || VP[i] < 70) continue;
-    for (const side of [-1, 1]) { const off = side > 0 ? RUN_R[i] - 0.4 : -(RUN_L[i] - 0.4), p = PTS[i]; v.set(p.x + R[i].x * off, 1.95, p.z + R[i].z * off);
+    for (const side of [-1, 1]) { if (side > 0 && pitGap(i)) continue; const off = side > 0 ? RUN_R[i] - 0.4 : -(RUN_L[i] - 0.4), p = PTS[i];   // no boards over the pit entry and exit v.set(p.x + R[i].x * off, 1.95, p.z + R[i].z * off);
       const m = new THREE.Mesh(bg, mats[n++ % mats.length]); m.position.copy(v); m.rotation.y = Math.atan2(T[i].x, T[i].z) + (side > 0 ? -Math.PI / 2 : Math.PI / 2); scene.add(m); } }
   // the bridge: the longest straight that isn't the main one
   let best = -1, bl = 0, st = -1; for (let i = 0; i < N; i++) { const flat = Math.abs(KS[i]) < 0.0015; if (flat && st < 0) st = i; if (!flat && st >= 0) { if (i - st > bl && st > N * 0.25) { bl = i - st; best = st; } st = -1; } }
@@ -1451,7 +1468,9 @@ function buildPitGuide(car) {
   const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -6, polygonOffsetUnits: -10 }));
   m.renderOrder = 4; m.visible = false; scene.add(m); PIT_GUIDE.mesh = m; PIT_GUIDE.s0 = s0; PIT_GUIDE.s1 = s1;
 }
-function updatePitGuide() {
+function updatePitExitLight() { if (PIT_EXIT_LIGHTS.length < 2) return; const busy = CARS.some((o) => !o.pit && !o.out && (() => { const d = pitRel(o.s) - PIT.exit; return d > -140 && d < 0 && o.d < HW; })());
+  PIT_EXIT_LIGHTS[0].material.color.setHex(busy ? 0xff1a0a : 0x400606); PIT_EXIT_LIGHTS[1].material.color.setHex(busy ? 0x0b3d1d : 0x22e070); }
+function updatePitGuide() { updatePitExitLight();
   const m = PIT_GUIDE.mesh, c = player; if (!m) return; const ps = c ? pitRel(c.s) : 0;
   m.visible = !!(c && c.boxReq && !c.pit && phase === "race" && ps > PIT_GUIDE.s0 - 400 && ps < PIT_GUIDE.s1 + 5);
   if (m.visible) m.material.map.offset.y = -(performance.now() / 1000) * 0.8 % 1;   // the arrows flow towards the box

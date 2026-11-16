@@ -107,10 +107,16 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .dash .flags { display: flex; gap: 6px; margin-top: 10px; }
 .tag { font-size: 9px; font-weight: 600; letter-spacing: 0.16em; padding: 3px 7px; border: 1px solid var(--line); color: var(--fg3); }
 .tag.on { border-color: var(--go); color: var(--go); } .tag.warn { border-color: var(--amber); color: var(--amber); }
-.dmgbox { position: absolute; left: max(14px, env(safe-area-inset-left)); top: calc(max(14px, env(safe-area-inset-top)) + 300px); width: 76px; padding: 8px 8px 7px; display: grid; justify-items: center; gap: 4px; }
-.dmgbox svg { width: 46px; height: 95px; } .dmgbox small { font-family: var(--display); font-size: 7px; letter-spacing: 0.16em; color: var(--fg3); text-align: center; }
-.dmgbox rect, .dmgbox path { fill: rgba(220,232,242,0.16); stroke: rgba(220,232,242,0.45); stroke-width: 1; } .dmgbox .tyre { fill: rgba(220,232,242,0.08); }
-@media (max-width: 640px) { .dmgbox { top: calc(max(14px, env(safe-area-inset-top)) + 240px); width: 60px; } .dmgbox svg { width: 36px; height: 74px; } }
+/* car status: a clean top view, parts lit by damage, tyre wear at each wheel */
+.dmgbox { position: absolute; left: max(14px, env(safe-area-inset-left)); top: calc(max(14px, env(safe-area-inset-top)) + 300px); width: 96px; padding: 8px 8px 8px; background: rgba(12,12,15,0.86); border-radius: 8px; display: grid; gap: 4px; }
+.dmh { display: flex; justify-content: space-between; align-items: baseline; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; } .dmh b { color: var(--fg3); } .dmh span { color: #24d16b; }
+.dmgbox svg { width: 100%; height: auto; display: block; }
+.dmgbox svg path, .dmgbox svg ellipse { fill: rgba(255,255,255,0.13); stroke: none; transition: fill 0.25s; } .dmgbox svg .cock { fill: rgba(0,0,0,0.55); }
+.dmgbox svg .tyre { stroke: none; transition: fill 0.4s; }
+.dmgbox svg text { font: 800 12px "Titillium Web", sans-serif; fill: #fff; text-anchor: middle; }
+.dmf { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 800; }
+.dmf i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; color: #0b0b0d; background: #ffd23f; box-shadow: inset 0 0 0 2px #15181d; }
+@media (max-height: 500px) { .dmgbox { top: max(14px, env(safe-area-inset-top)); left: calc(max(14px, env(safe-area-inset-left)) + 184px); width: 70px; padding: 6px; gap: 2px; } .dmgbox svg text { font-size: 15px; } .dmh { font-size: 8px; } }   /* phones on their side: beside the tower, clear of the pedals */
 .minimap { position: absolute; right: max(14px, env(safe-area-inset-right)); top: max(14px, env(safe-area-inset-top)); width: 176px; height: 138px; }
 .msg { position: absolute; left: 50%; top: 24%; transform: translateX(-50%); font-family: var(--display); font-size: 24px; letter-spacing: 0.08em; text-align: center; text-shadow: 0 2px 18px rgba(0,0,0,0.6); white-space: nowrap; transition: opacity 0.4s; }
 .msg small { display: block; font-family: var(--body); font-size: 13px; font-weight: 500; letter-spacing: 0.14em; color: var(--fg2); margin-top: 8px; text-transform: uppercase; }
@@ -285,12 +291,20 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.14) saturate(0.8)
     <div class="flags"><span class="tag" id="hDrs">DRS</span><span class="tag" id="hOff">TRACK</span><span class="tag" id="hDelta">LAST —</span><span class="tag" id="hBoxT" hidden>BOX</span></div>
   </div>
   <div class="lights" id="lights" hidden></div>
-  <div class="dmgbox panel" id="dmgBox"><svg viewBox="0 0 60 124" aria-label="Car damage">
-    <rect id="wFL" x="17" y="17" width="5" height="12" rx="1.5" class="tyre"/><rect id="wFR" x="38" y="17" width="5" height="12" rx="1.5" class="tyre"/><rect id="wRL" x="15" y="88" width="6" height="14" rx="1.5" class="tyre"/><rect id="wRR" x="39" y="88" width="6" height="14" rx="1.5" class="tyre"/>
-    <rect id="dFL" x="5" y="4" width="24" height="7" rx="1"/><rect id="dFR" x="31" y="4" width="24" height="7" rx="1"/>
-    <path class="body" d="M27 11 L33 11 L35 44 L35 86 L33 100 L27 100 L25 86 L25 44 Z"/>
-    <rect id="dSL" x="12" y="46" width="11" height="34" rx="3"/><rect id="dSR" x="37" y="46" width="11" height="34" rx="3"/>
-    <rect id="dRW" x="13" y="106" width="34" height="9" rx="1"/></svg><small id="dmgTxt">CAR OK</small><small id="wearTxt">TYRES 100%</small></div>
+  <div class="dmgbox" id="dmgBox">
+    <div class="dmh"><b>CAR</b><span id="dmgTxt">OK</span></div>
+    <svg viewBox="0 0 120 200" aria-label="Car damage and tyre wear">
+      <path id="dFL" d="M14 14 h40 l2 8 h-44 z"/><path id="dFR" d="M66 14 h40 l2 8 h-44 z" transform="translate(-2 0)"/>
+      <path class="body" d="M54 22 L66 22 L68 58 Q78 64 80 80 L82 128 Q80 150 70 158 L66 172 L54 172 L50 158 Q40 150 38 128 L40 80 Q42 64 52 58 Z"/>
+      <path id="dSL" d="M38 82 Q30 84 28 96 L28 128 Q30 140 38 142 Z"/><path id="dSR" d="M82 82 Q90 84 92 96 L92 128 Q90 140 82 142 Z"/>
+      <ellipse class="cock" cx="60" cy="86" rx="7" ry="12"/>
+      <path id="dRW" d="M28 176 h64 v10 h-64 z"/>
+      <rect id="wFL" class="tyre" x="14" y="34" width="16" height="30" rx="4"/><rect id="wFR" class="tyre" x="90" y="34" width="16" height="30" rx="4"/>
+      <rect id="wRL" class="tyre" x="10" y="140" width="19" height="32" rx="4"/><rect id="wRR" class="tyre" x="91" y="140" width="19" height="32" rx="4"/>
+      <text id="tFL" x="22" y="78">100</text><text id="tFR" x="98" y="78">100</text><text id="tRL" x="19" y="134">100</text><text id="tRR" x="101" y="134">100</text>
+    </svg>
+    <div class="dmf"><i id="wearC">M</i><span id="wearTxt">100%</span></div>
+  </div>
   <div class="msg" id="msg"></div>
   <div class="radio panel" id="radio" aria-live="polite"><span class="bar" id="rBar"></span><small><i><b></b><b></b><b></b><b></b></i><span id="rWho">TEAM RADIO</span></small><p id="rTxt"></p></div>
 </div>
@@ -1345,12 +1359,14 @@ function stepSparks(dt) { const P = SPARK.g.attributes.position.array; let any =
   for (let i = 0; i < SPARK.n; i++) { if (SPARK.life[i] <= 0) { P[i * 3 + 1] = -50; continue; } any = true; SPARK.life[i] -= dt; SPARK.v[i * 3 + 1] -= 14 * dt;
     for (let a = 0; a < 3; a++) P[i * 3 + a] += SPARK.v[i * 3 + a] * dt; if (P[i * 3 + 1] < 0.05) { P[i * 3 + 1] = 0.05; SPARK.v[i * 3 + 1] *= -0.3; } }
   if (any || SPARK.dirty) SPARK.g.attributes.position.needsUpdate = true; SPARK.dirty = any; }
-function drawDamage(c) {
-  const col = (d) => (d < 0.05 ? "rgba(220,232,242,0.16)" : d < 0.35 ? "#ffc857" : d < 0.7 ? "#ff8a3d" : "#ff3b30");
+function drawDamage(c) {   // each part from grey (fine) through amber to red (broken); each tyre by its wear, with the percentage left
+  const col = (d) => (d < 0.05 ? "rgba(255,255,255,0.13)" : d < 0.35 ? "#ffc857" : d < 0.7 ? "#ff8a3d" : "#ff3b30");
   for (const [id, k] of [["dFL", "fl"], ["dFR", "fr"], ["dRW", "rw"], ["dSL", "sl"], ["dSR", "sr"]]) $(id).style.fill = c.dnf ? "#ff3b30" : col(c.dmg[k]);
-  // the four tyres coloured by wear: green while fresh, amber half gone, red when they're finished (fronts work a little harder)
-  for (const [id, f] of [["wFL", 1.06], ["wFR", 1.06], ["wRL", 1], ["wRR", 1]]) { const w = Math.min(1, c.wear * f); $(id).style.fill = w < 0.4 ? "#24d16b" : w < 0.7 ? "#ffc857" : w < 0.9 ? "#ff8a3d" : "#ff3b30"; }
-  const worst = Math.max(...Object.values(c.dmg)); $("wearTxt").textContent = `${c.tyre} TYRES ${Math.max(0, Math.round((1 - Math.min(1, c.wear)) * 100))}%`; $("dmgTxt").textContent = c.dnf ? "RETIRED" : worst < 0.05 ? "CAR OK" : worst < 0.35 ? "MINOR DAMAGE" : worst < 0.7 ? "DAMAGED" : "HEAVY DAMAGE";
+  for (const [k, f] of [["FL", 1.06], ["FR", 1.06], ["RL", 1], ["RR", 1]]) { const w = Math.min(1, c.wear * f), left = Math.max(0, Math.round((1 - w) * 100));
+    $("w" + k).style.fill = w < 0.4 ? "#1fb860" : w < 0.7 ? "#e8b53a" : w < 0.9 ? "#ff8a3d" : "#ff3b30"; $("t" + k).textContent = left; }
+  const worst = Math.max(...Object.values(c.dmg)), st = c.dnf ? ["RETIRED", "#ff3b30"] : worst < 0.05 ? ["OK", "#24d16b"] : worst < 0.35 ? ["MINOR", "#ffc857"] : worst < 0.7 ? ["DAMAGED", "#ff8a3d"] : ["HEAVY", "#ff3b30"];
+  $("dmgTxt").textContent = st[0]; $("dmgTxt").style.color = st[1];
+  $("wearC").textContent = c.tyre; $("wearC").style.background = TYRES[c.tyre].col; $("wearTxt").textContent = Math.max(0, Math.round((1 - Math.min(1, c.wear)) * 100)) + "%";
 }
 
 // ================= PIT STOPS =================

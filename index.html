@@ -198,16 +198,31 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .slider { display: flex; align-items: center; gap: 12px; } .slider input { width: 180px; accent-color: #e10600; } .slider output { font-variant-numeric: tabular-nums; color: var(--fg); font-size: 14px; min-width: 36px; }
 .screen .race-only[hidden], .screen .noquali[hidden] { display: none; }
 /* title: the live race behind, the game's wordmark top right, a big PLAY in the middle */
-.titlescr { background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%), linear-gradient(180deg, rgba(10,14,19,0.15) 0%, rgba(10,14,19,0) 30%, rgba(10,14,19,0) 60%, rgba(10,14,19,0.8) 100%); display: block; }
+.titlescr { background: linear-gradient(90deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.25) 38%, rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%), linear-gradient(180deg, rgba(10,14,19,0.15) 0%, rgba(10,14,19,0) 30%, rgba(10,14,19,0) 60%, rgba(10,14,19,0.8) 100%); display: block; }
 body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.12) saturate(0.82) brightness(0.92); }
-.tlogo { position: absolute; right: max(28px, env(safe-area-inset-right)); top: max(24px, env(safe-area-inset-top)); display: grid; justify-items: end; line-height: 0.86; transform: skewX(-12deg); text-shadow: 0 6px 30px rgba(0,0,0,0.45); }
-.tlogo b { font-family: var(--body); font-weight: 900; font-style: italic; font-size: clamp(30px, min(7.4vw, 12vh), 92px); letter-spacing: -0.02em; color: #fff; }
-.tlogo b + b { color: #fff; } .tlogo i { font-style: normal; font-family: var(--display); font-size: clamp(14px, 2.4vw, 28px); letter-spacing: 0.5em; color: #fff; background: #e10600; padding: 4px 6px 4px 14px; margin-top: 10px; transform: skewX(12deg); }
-.playbtn { position: absolute; left: 50%; top: 76%; transform: translate(-50%, -50%) skewX(-12deg); border: 0; cursor: pointer; background: #e10600; color: #fff; font-family: var(--body); font-weight: 900; font-style: italic; font-size: clamp(22px, 4vw, 40px); letter-spacing: 0.08em; padding: 18px 64px; box-shadow: 0 14px 40px rgba(225,6,0,0.45); transition: transform 0.15s, background 0.15s; }
-.playbtn:hover, .playbtn:focus-visible { background: #ff2a1f; transform: translate(-50%, -50%) skewX(-12deg) scale(1.05); }
-.tinfo { position: absolute; left: 50%; top: calc(76% + 58px); transform: translateX(-50%); margin: 0; font-family: var(--display); font-size: 10px; letter-spacing: 0.3em; color: rgba(255,255,255,0.85); white-space: nowrap; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
-.thelp { position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); margin: 0; white-space: nowrap; color: rgba(255,255,255,0.7); }
-@media (max-width: 640px), (pointer: coarse) { .thelp { display: none; } }
+/* main menu, broadcast style: logo and profile on top, a big list of modes on the left, circuit tiles bottom right */
+.hbar { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: center; padding: max(18px, env(safe-area-inset-top)) max(30px, env(safe-area-inset-right)) 14px max(30px, env(safe-area-inset-left)); background: linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0)); }
+.hlogo { display: flex; align-items: center; gap: 10px; transform: skewX(-10deg); } .hlogo b { font-family: var(--body); font-weight: 900; font-style: italic; font-size: 24px; letter-spacing: 0.01em; }
+.hlogo i { font-style: normal; font-weight: 900; font-size: 13px; letter-spacing: 0.35em; background: #e10600; padding: 3px 4px 3px 10px; }
+.hprof { display: flex; align-items: center; gap: 12px; background: rgba(12,12,15,0.75); padding: 8px 14px 8px 8px; border-radius: 4px; }
+.hcol { width: 6px; align-self: stretch; border-radius: 2px; } .hprof b { display: block; font-weight: 700; font-size: 15px; } .hprof small { display: block; color: var(--fg3); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.hstat { padding-left: 14px; margin-left: 4px; border-left: 1px solid var(--line); text-align: center; } .hstat b { font-size: 18px; font-weight: 900; font-style: italic; }
+.hmenu { position: absolute; left: max(30px, env(safe-area-inset-left)); top: 50%; transform: translateY(-58%); display: grid; gap: 4px; }
+.hmenu button { border: 0; background: none; color: rgba(255,255,255,0.55); text-align: left; cursor: pointer; padding: 6px 18px 6px 16px; position: relative; font-family: var(--body); font-weight: 900; font-style: italic; font-size: clamp(24px, 4.2vw, 46px); line-height: 1.05; letter-spacing: 0.01em; text-shadow: 0 2px 14px rgba(0,0,0,0.5); transition: color 0.12s, transform 0.12s; }
+.hmenu button::before { content: ""; position: absolute; left: 0; top: 14%; bottom: 14%; width: 5px; background: #e10600; transform: scaleY(0); transition: transform 0.12s; }
+.hmenu button.on, .hmenu button:hover { color: #fff; transform: translateX(6px); } .hmenu button.on::before, .hmenu button:hover::before { transform: scaleY(1); }
+.hsub { position: absolute; left: max(48px, env(safe-area-inset-left)); top: calc(50% + clamp(96px, 15vw, 150px)); margin: 0; color: var(--fg2); font-size: 15px; font-weight: 600; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
+.htracks { position: absolute; right: max(30px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 40px); }
+.htracks h4 { margin: 0 0 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--fg2); text-shadow: 0 2px 8px rgba(0,0,0,0.6); } .htracks h4 span { color: var(--fg3); margin-left: 8px; font-weight: 600; letter-spacing: 0.06em; }
+#hTracks { display: flex; gap: 10px; }
+.htile { width: 170px; border: 0; padding: 0; cursor: pointer; text-align: left; color: #fff; background: rgba(14,14,18,0.86); border-radius: 6px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); transition: transform 0.12s; }
+.htile svg { display: block; width: 100%; height: 86px; background: radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.06), rgba(0,0,0,0)); }
+.htile div { padding: 6px 10px 8px; } .htile b { display: block; font-weight: 900; font-style: italic; font-size: 15px; text-transform: uppercase; } .htile small { color: var(--fg3); font-size: 11px; font-weight: 600; }
+.htile.on { box-shadow: inset 0 0 0 2px #e10600; } .htile:hover { transform: translateY(-3px); }
+.hhints { position: absolute; left: max(30px, env(safe-area-inset-left)); bottom: max(14px, env(safe-area-inset-bottom)); display: flex; gap: 18px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--fg2); }
+.hhints span { display: inline-flex; align-items: center; gap: 7px; } .hhints i { font-style: normal; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; background: rgba(255,255,255,0.9); color: #0b0b0d; display: grid; place-items: center; font-size: 11px; } .hhints i.go { background: #e10600; color: #fff; }
+@media (max-height: 500px) { .hmenu { transform: translateY(-62%); } .hmenu button { font-size: 26px; padding: 3px 14px; } .hsub { display: none; } .htile { width: 128px; } .htile svg { height: 56px; } .hhints { display: none; } .htracks { bottom: max(12px, env(safe-area-inset-bottom)); } }
+@media (pointer: coarse) { .hhints { display: none; } }
 /* sector times under the timing strip */
 .sectors { position: absolute; top: calc(max(14px, env(safe-area-inset-top)) + 58px); left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
 .sectors div { min-width: 86px; padding: 4px 10px 5px; background: var(--glass); clip-path: var(--cut-s); font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
@@ -281,10 +296,17 @@ body:has(#menu:not([hidden])) canvas#view { filter: contrast(1.12) saturate(0.82
 </div>
 
 <div class="screen titlescr" id="menu">
-  <div class="tlogo" aria-label="Formula Racing Web"><b>FORMULA</b><b>RACING</b><i>WEB</i></div>
-  <button class="playbtn" id="bStart" type="button">ИГРАТЬ</button>
-  <p class="tinfo"><span id="tEyebrow">YAS MARINA · 5.28 KM · 20 CARS</span><span id="tSub" hidden></span></p>
-  <p class="help thelp"><kbd>↑</kbd> throttle · <kbd>↓</kbd> brake · <kbd>←</kbd><kbd>→</kbd> steer · <kbd>E</kbd> DRS · <kbd>C</kbd> camera · <kbd>B</kbd> pit stop · <kbd>Esc</kbd> pause</p>
+  <div class="hbar"><div class="hlogo"><b>FORMULA RACING</b><i>WEB</i></div>
+    <div class="hprof"><span class="hcol" id="hpCol"></span><div><b id="hpName">DRIVER</b><small id="hpTeam">TEAM</small></div><div class="hstat"><small>WINS</small><b id="hpWins">0</b></div></div></div>
+  <nav class="hmenu" id="hMenu" aria-label="Main menu">
+    <button type="button" id="bStart" data-sub="Квалификация, гонка, пит-стопы и радио"><span>ГРАН-ПРИ</span></button>
+    <button type="button" id="bTT" data-sub="Один на трассе, лучший круг и призрак"><span>ЗАЕЗД НА ВРЕМЯ</span></button>
+    <button type="button" id="bGar" data-sub="Команды, ливреи, гонщики"><span>ГАРАЖ</span></button>
+    <button type="button" id="bSet" data-sub="Трасса, круги, соперники, управление"><span>НАСТРОЙКИ</span></button>
+  </nav>
+  <p class="hsub" id="hSub"></p>
+  <div class="htracks"><h4>ТРАССЫ <span id="tEyebrow"></span></h4><div id="hTracks"></div><span id="tSub" hidden></span></div>
+  <div class="hhints"><span><i>↑↓</i>ВЫБОР</span><span><i class="go">⏎</i>ДАЛЕЕ</span></div>
 </div>
 <div class="garage" id="garage" hidden>
   <div class="gtop"><span class="gtag">ГАРАЖ</span><span class="gidx" id="gIdx">1 / 10</span><button class="gren" id="gRename" type="button">RENAME</button>
@@ -1955,13 +1977,29 @@ function togglePause() { if (phase === "menu" || phase === "results") return; pa
 let menuStep = "title";
 function showStep(step) {
   menuStep = step; phase = "menu"; for (const id of ["menu", "garage", "setup", "qres", "results", "pause", "hud", "touch", "topBtns", "pitMenu"]) $(id).hidden = true;
-  if (step === "title") $("menu").hidden = false; if (step === "garage") { $("garage").hidden = false; GAR.show(GAR.idx); } if (step === "setup") { $("setup").hidden = false; syncSetup(); }
+  if (step === "title") { $("menu").hidden = false; syncHome(); } if (step === "garage") { $("garage").hidden = false; GAR.show(GAR.idx); } if (step === "setup") { $("setup").hidden = false; syncSetup(); }
 }
 function toMenu() { paused = false; clearCars(); player = null; inQuali = false; RADIO.reset(); $("pitMenu").hidden = true; showStep("title"); if (eng) eng.g.gain.value = 0; }
 $("bResume").onclick = togglePause; $("bRestart").onclick = () => { paused = false; if (inQuali) setupRace({ quali: true }); else setupRace(); }; $("bQuit").onclick = toMenu;
 $("bAgain").onclick = () => startWeekend(); $("bMenu").onclick = toMenu;
 $("bPause").onclick = togglePause; $("bCam").onclick = cycleCam; $("bLine").onclick = toggleLine; $("bSkip").onclick = () => finishQuali(null);
-$("bStart").onclick = () => { audioStart(); GAR.idx = +SET.team || 0; showStep("garage"); };
+// main menu: modes on the left (arrow keys or tap), circuits as tiles
+$("bStart").onclick = () => { audioStart(); SET.mode = "race"; store.set("set", SET); GAR.idx = +SET.team || 0; showStep("garage"); };
+$("bTT").onclick = () => { audioStart(); SET.mode = "tt"; store.set("set", SET); GAR.idx = +SET.team || 0; showStep("garage"); };
+$("bGar").onclick = () => { audioStart(); GAR.idx = +SET.team || 0; showStep("garage"); };
+$("bSet").onclick = () => { audioStart(); GAR.idx = +SET.team || 0; showStep("setup"); };
+const HM = [...$("hMenu").children]; let hSel = 0;
+const hFocus = (k) => { hSel = (k + HM.length) % HM.length; HM.forEach((b, i) => b.classList.toggle("on", i === hSel)); $("hSub").textContent = HM[hSel].dataset.sub; };
+HM.forEach((b, i) => b.addEventListener("pointerenter", () => hFocus(i))); hFocus(0);
+addEventListener("keydown", (e) => { if (phase !== "menu" || menuStep !== "title" || e.target.tagName === "INPUT") return; if (e.code === "ArrowDown" || e.code === "KeyS") hFocus(hSel + 1); if (e.code === "ArrowUp" || e.code === "KeyW") hFocus(hSel - 1); if (e.code === "Enter" || e.code === "Space") HM[hSel].click(); });
+function syncHome() { const t = TEAMS[+SET.team || 0]; $("hpCol").style.background = t.c1; $("hpName").textContent = t.drivers[0][2]; $("hpTeam").textContent = t.name; $("hpWins").textContent = store.get("wins", 0); }
+{ const box = $("hTracks"); for (const T of Object.values(TRACKS)) { let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9; for (const [x, z] of T.cp) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+    const sc = Math.min(150 / (x1 - x0), 70 / (z1 - z0)), ox = 85 - (x0 + x1) / 2 * sc, oz = 43 - (z0 + z1) / 2 * sc, d = T.cp.map(([x, z], k) => `${k ? "L" : "M"}${(x * sc + ox).toFixed(1)} ${(z * sc + oz).toFixed(1)}`).join("") + "Z";
+    const b = document.createElement("button"); b.type = "button"; b.className = "htile" + (T.id === TRACK.id ? " on" : "");
+    b.innerHTML = `<svg viewBox="0 0 170 86" aria-hidden="true"><path d="${d}" fill="none" stroke="${T.id === TRACK.id ? "#e10600" : "rgba(255,255,255,0.75)"}" stroke-width="3" stroke-linejoin="round"/></svg><div><b></b><small>${T.km} KM</small></div>`; b.querySelector("b").textContent = T.name;
+    b.onclick = () => { if (T.id === TRACK.id) { $("bStart").click(); return; } SET.track = T.id; store.set("set", SET); $("bootTxt").textContent = `LOADING ${T.name.toUpperCase()}`; $("boot").hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => location.reload())); };
+    box.append(b); } }
+syncHome();
 $("gPrev").onclick = () => GAR.show(GAR.idx - 1); $("gNext").onclick = () => GAR.show(GAR.idx + 1);
 $("gBack").onclick = () => showStep("title"); $("gSelect").onclick = () => { SET.team = GAR.idx; store.set("set", SET); showStep("setup"); };
 $("sBack").onclick = () => showStep("garage"); $("sGo").onclick = () => startWeekend(); $("qGo").onclick = () => setupRace();
@@ -2018,7 +2056,7 @@ const GAR = (() => {
 })();
 window.__APEX = { simulate, lineAt, vAt, pointAt, DRS, get raceT() { return raceT; }, CARS, get player() { return player; }, get phase() { return phase; }, set phase(v) { phase = v; }, TL, VP, setupRace, SET, order, stepPlayer, locate, PIT, KW, RUN_R, N, DS, toggleBox, RADIO, TYRES, setTyre, get camMode() { return camMode; }, set camMode(v) { camMode = v; }, get paused() { return paused; }, set paused(v) { paused = v; }, place, simStep, GAR, buildCar, TEAMS, pitOff, boxS, PIT_BOXOFF, pitRel, HW, PIT_GUIDE };
 // the circuit: the whole world is built for one layout, so switching reloads the page and comes back to this screen
-$("tEyebrow").textContent = `${TRACK.name.toUpperCase()} · ${TRACK.km} KM · 20 CARS`; $("tSub").textContent = TRACK.sub;
+$("tEyebrow").textContent = `· ${TRACK.name.toUpperCase()}`; $("tSub").textContent = TRACK.sub;
 $("sTrack").querySelectorAll("button").forEach((b) => { b.setAttribute("aria-pressed", String(b.dataset.v === TRACK.id));
   b.addEventListener("click", () => { if (b.dataset.v === TRACK.id) return; SET.track = b.dataset.v; store.set("set", SET); store.set("resume", Date.now());
     $("bootTxt").textContent = `LOADING ${TRACKS[SET.track].name.toUpperCase()}`; $("boot").hidden = false;

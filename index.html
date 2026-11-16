@@ -170,16 +170,31 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
 .garage { position: fixed; inset: 0; z-index: 9; pointer-events: none; }
 .garage[hidden] { display: none; }
 .garage > * { pointer-events: auto; }
-.gtop { position: absolute; left: max(28px, env(safe-area-inset-left)); top: max(26px, env(safe-area-inset-top)); max-width: 70vw; }
-.gname { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 5.4vw, 52px); letter-spacing: 0.04em; margin: 0 0 14px; line-height: 1.05; }
-.gdrivers { display: grid; gap: 8px; } .gdrivers div { display: flex; align-items: baseline; gap: 12px; font-size: 15px; color: var(--fg2); }
-.gdrivers b { font-family: var(--display); font-weight: 400; font-size: 20px; color: var(--fg); min-width: 34px; } .gdrivers span { color: var(--fg3); font-size: 12px; letter-spacing: 0.16em; }
-.garrow { position: absolute; top: 50%; transform: translateY(-50%); width: 54px; height: 72px; border: 0; background: var(--glass); clip-path: var(--cut); color: var(--fg); cursor: pointer; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line2); }
-.garrow svg { width: 26px; height: 26px; } .garrow:hover { background: var(--ice-d); }
-.garrow.left { left: max(18px, env(safe-area-inset-left)); } .garrow.right { right: max(18px, env(safe-area-inset-right)); }
-.gdots { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(max(24px, env(safe-area-inset-bottom)) + 74px); display: flex; gap: 6px; }
-.gdots i { width: 18px; height: 3px; background: var(--line2); } .gdots i.on { background: var(--ice); }
-.gbottom { position: absolute; left: 50%; transform: translateX(-50%); bottom: max(24px, env(safe-area-inset-bottom)); display: flex; gap: 10px; }
+/* garage: a dark studio, the team on the left, a strip of team cards along the bottom */
+.gtop { position: absolute; left: max(32px, env(safe-area-inset-left)); top: max(28px, env(safe-area-inset-top)); max-width: 60vw; }
+.gtag { display: inline-block; background: #e10600; color: #fff; font-family: var(--body); font-weight: 800; font-size: 11px; letter-spacing: 0.12em; padding: 4px 10px; border-radius: 3px; vertical-align: middle; }
+.gidx { margin-left: 12px; font-family: var(--display); font-size: 9px; letter-spacing: 0.24em; color: var(--fg3); vertical-align: middle; }
+.gname { font-family: var(--body); font-weight: 900; font-size: clamp(26px, 4.4vw, 46px); letter-spacing: 0.01em; margin: 12px 0 4px; line-height: 1.05; text-transform: uppercase; }
+.gscheme { display: inline-flex; align-items: center; gap: 10px; margin: 6px 0 16px; padding: 6px 12px 6px 8px; background: rgba(255,255,255,0.05); border-radius: 4px; }
+.gscheme span { display: flex; gap: 4px; } .gscheme span i { width: 14px; height: 14px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); }
+.gscheme small { font-size: 12px; color: var(--fg2); font-weight: 500; }
+.gdrivers { display: grid; gap: 6px; } .gdrivers div { display: flex; align-items: baseline; gap: 12px; font-size: 14px; color: var(--fg2); }
+.gdrivers b { font-family: var(--body); font-weight: 800; font-size: 18px; color: var(--fg); min-width: 30px; } .gdrivers span { color: var(--fg3); font-size: 11px; letter-spacing: 0.16em; }
+.garrow { position: absolute; top: 46%; transform: translateY(-50%); width: 44px; height: 60px; border: 0; background: rgba(255,255,255,0.05); border-radius: 6px; color: var(--fg); cursor: pointer; display: grid; place-items: center; }
+.garrow svg { width: 22px; height: 22px; } .garrow:hover { background: rgba(255,255,255,0.12); }
+.garrow.left { left: max(16px, env(safe-area-inset-left)); } .garrow.right { right: max(16px, env(safe-area-inset-right)); }
+.gcards { position: absolute; left: 0; right: 0; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 46px); display: flex; gap: 10px; padding: 0 max(32px, env(safe-area-inset-left)); overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+.gcards::-webkit-scrollbar { display: none; }
+.gcard { flex: none; width: 168px; border: 0; padding: 0; background: linear-gradient(180deg, #23272e, #15181d); border-radius: 6px; cursor: pointer; color: var(--fg); text-align: left; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); transition: transform 0.15s, box-shadow 0.15s; }
+.gcard img { display: block; width: 100%; height: 76px; object-fit: cover; }
+.gcard div { display: flex; align-items: center; gap: 8px; padding: 6px 10px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gcard div i { width: 3px; height: 12px; flex: none; }
+.gcard.on { box-shadow: inset 0 0 0 2px #fff, 0 8px 24px rgba(0,0,0,0.5); transform: translateY(-4px); background: linear-gradient(180deg, #343a44, #1e2229); }
+.gbottom { position: absolute; right: max(28px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); display: flex; gap: 18px; }
+.ghint { border: 0; background: none; color: var(--fg2); font-family: var(--body); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; }
+.ghint i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.9); color: #0a0e13; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+.ghint.go { color: #fff; } .ghint.go i { background: #e10600; color: #fff; } .ghint:hover { color: #fff; }
+@media (max-height: 500px) { .garrow { display: none; } .gcard { width: 128px; } .gcard img { height: 54px; } .gname { margin-top: 6px; } .gscheme { margin: 2px 0 8px; } }
 .slider { display: flex; align-items: center; gap: 12px; } .slider input { width: 180px; accent-color: #8fd3ff; } .slider output { font-variant-numeric: tabular-nums; color: var(--fg); font-size: 14px; min-width: 36px; }
 .screen .race-only[hidden], .screen .noquali[hidden] { display: none; }
 /* title: the live race behind, the game's wordmark top right, a big PLAY in the middle */
@@ -262,11 +277,14 @@ button:focus-visible { outline: 1px solid var(--ice); outline-offset: 3px; }
   <p class="help thelp"><kbd>↑</kbd> throttle · <kbd>↓</kbd> brake · <kbd>←</kbd><kbd>→</kbd> steer · <kbd>E</kbd> DRS · <kbd>C</kbd> camera · <kbd>B</kbd> pit stop · <kbd>Esc</kbd> pause</p>
 </div>
 <div class="garage" id="garage" hidden>
-  <div class="gtop"><p class="eyebrow">GARAGE · <span id="gIdx">1 / 10</span><button class="gren" id="gRename" type="button">RENAME</button></p><h2 class="gname" id="gName">TEAM</h2><div class="gdrivers" id="gDrivers"></div></div>
+  <div class="gtop"><span class="gtag">ГАРАЖ</span><span class="gidx" id="gIdx">1 / 10</span><button class="gren" id="gRename" type="button">RENAME</button>
+    <h2 class="gname" id="gName">TEAM</h2>
+    <div class="gscheme"><span id="gSw"></span><small>COLOUR SCHEME</small></div>
+    <div class="gdrivers" id="gDrivers"></div></div>
   <button class="garrow left" id="gPrev" type="button" aria-label="Previous team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5 8 12l7 7"/></svg></button>
   <button class="garrow right" id="gNext" type="button" aria-label="Next team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg></button>
-  <div class="gdots" id="gDots"></div>
-  <div class="gbottom"><button class="btn alt" id="gBack" type="button">BACK</button><button class="btn" id="gSelect" type="button">SELECT TEAM</button></div>
+  <div class="gcards" id="gCards"></div><div id="gDots" hidden></div>
+  <div class="gbottom"><button class="ghint" id="gBack" type="button"><i>⟲</i>BACK</button><button class="ghint go" id="gSelect" type="button"><i>✓</i>SELECT TEAM</button></div>
 </div>
 <div class="screen" id="setup" hidden>
   <div class="card">
@@ -1666,7 +1684,7 @@ function renameDriver(ti, k, el) {   // your own name for a driver, kept on this
 $("gRename").onclick = () => {
   const i = GAR.idx, h = $("gName"), inp = document.createElement("input"); inp.type = "text"; inp.maxLength = 24; inp.value = TEAMS[i].name; inp.setAttribute("aria-label", "Team name");
   h.replaceChildren(inp); inp.focus(); inp.select();
-  const done = (save) => { if (!inp.isConnected) return; if (save) { const v = inp.value.trim().slice(0, 24), nm = store.get("names", {}); TEAMS[i].name = v || TEAM_DEF[i]; if (v && v !== TEAM_DEF[i]) nm[i] = v; else delete nm[i]; store.set("names", nm); GAR.refresh(i); } GAR.show(i); };
+  const done = (save) => { if (!inp.isConnected) return; if (save) { const v = inp.value.trim().slice(0, 24), nm = store.get("names", {}); TEAMS[i].name = v || TEAM_DEF[i]; if (v && v !== TEAM_DEF[i]) nm[i] = v; else delete nm[i]; store.set("names", nm); GAR.refresh(i); GAR.resetCards(); } GAR.show(i); };
   inp.addEventListener("keydown", (e) => { e.stopPropagation(); if (e.key === "Enter") done(true); if (e.key === "Escape") done(false); });
   inp.addEventListener("blur", () => done(true));
 };
@@ -1942,16 +1960,28 @@ document.querySelectorAll(".seg[data-k]").forEach((g) => { const k = g.dataset.k
   g.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { SET[k] = b.dataset.v; sync(); store.set("set", SET); if (g.closest("#setup")) syncSetup(); })); sync(); });
 // ---- the garage: the team's car on a lit turntable; drag to turn it ----
 const GAR = (() => {
-  const sc = new THREE.Scene(); sc.background = new THREE.Color(0x0a0e13); sc.fog = new THREE.Fog(0x0a0e13, 16, 40);
-  const cam = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, 0.1, 120); cam.position.set(6.4, 2.3, 7.4); cam.lookAt(0, 0.45, 0);
-  sc.add(new THREE.HemisphereLight(0xa9c3e6, 0x0d1117, 0.55));
-  const key = new THREE.SpotLight(0xf6f8ff, 2.2, 40, 0.55, 0.6, 1.2); key.position.set(2, 11, 4); key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -0.0005; sc.add(key, key.target);
-  for (const [x, z, c] of [[-7, -5, 0x8fd3ff], [7, -6, 0x8fd3ff], [0, 8, 0xe8eeff]]) { const l = new THREE.PointLight(c, 0.9, 30); l.position.set(x, 3.5, z); sc.add(l); }
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 64), new THREE.MeshStandardMaterial({ color: 0x0d1218, roughness: 0.55, metalness: 0.3 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; sc.add(floor);
-  const disc = new THREE.Mesh(new THREE.CylinderGeometry(4.6, 4.7, 0.12, 72), new THREE.MeshStandardMaterial({ color: 0x1a222c, roughness: 0.35, metalness: 0.6 })); disc.position.y = 0.06; disc.receiveShadow = true; sc.add(disc);
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(4.66, 0.025, 6, 128), new THREE.MeshBasicMaterial({ color: 0x8fd3ff })); ring.rotation.x = Math.PI / 2; ring.position.y = 0.125; sc.add(ring);
+  // a dark photo studio: a soft light from above, cool rim lights, a glossy floor that fades into black, a faint backdrop
+  const sc = new THREE.Scene(); sc.background = new THREE.Color(0x0b0c0e); sc.fog = new THREE.Fog(0x0b0c0e, 12, 30);
+  const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.1, 120); cam.position.set(-8.2, 1.75, -3.4); cam.lookAt(0.2, 0.15, 0.1);
+  sc.add(new THREE.HemisphereLight(0xc8d4e6, 0x050506, 0.25));
+  const key = new THREE.SpotLight(0xffffff, 2.4, 30, 0.42, 0.85, 1.4); key.position.set(-0.5, 10, -0.5); key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004; sc.add(key, key.target);
+  for (const [x, y, z, c, k] of [[-6, 2.5, 4, 0xdfe8ff, 0.55], [5, 3, -6, 0x9fb8ff, 0.5], [-7, 1.2, -5, 0xffffff, 0.45]]) { const l = new THREE.PointLight(c, k, 30); l.position.set(x, y, z); sc.add(l); }
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 64), new THREE.MeshStandardMaterial({ color: 0x0c0d10, roughness: 0.35, metalness: 0.5 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; sc.add(floor);
+  const glow = new THREE.Mesh(new THREE.CircleGeometry(4.2, 64), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.025, depthWrite: false })); glow.rotation.x = -Math.PI / 2; glow.position.y = 0.01; sc.add(glow);
+  const back = new THREE.Mesh(new THREE.CylinderGeometry(16, 16, 9, 64, 1, true, Math.PI * 0.15, Math.PI * 0.9), new THREE.MeshStandardMaterial({ color: 0x0e0f12, roughness: 0.95, side: THREE.BackSide })); back.position.y = 4.4; sc.add(back);
+  const ring = { material: { color: new THREE.Color() } };   // (no coloured ring in this studio)
   const table = new THREE.Group(); table.position.y = 0.12; sc.add(table);
-  const cars = new Map(); let idx = 0, ang = 0.9, drag = null, idle = 0;
+  const cars = new Map(); let idx = 0, ang = 0, drag = null, idle = 0, cardsBuilt = false;
+  // team cards along the bottom: a little render of each car, made once, one per frame so the screen never stalls
+  function buildCards() { if (cardsBuilt) return; cardsBuilt = true; const box = $("gCards"); box.replaceChildren();
+    TEAMS.forEach((t, k) => { const b = document.createElement("button"); b.type = "button"; b.className = "gcard"; b.innerHTML = `<img alt=""><div><i style="background:${t.c1}"></i><span></span></div>`; b.querySelector("span").textContent = t.name; b.onclick = () => show(k); box.append(b); });
+    let k = 0; const step = () => { if (k >= TEAMS.length) return; snap(k, box.children[k].querySelector("img")); k++; requestAnimationFrame(step); }; requestAnimationFrame(step); }
+  const RT = new THREE.WebGLRenderTarget(336, 152, { encoding: THREE.sRGBEncoding }), tcam = new THREE.PerspectiveCamera(24, 336 / 152, 0.1, 60); tcam.position.set(-6.6, 1.5, -3.0); tcam.lookAt(0, 0.45, 0.2);
+  function snap(k, img) { const t = TEAMS[k], m = buildCar(t, t.drivers[0][1], false), was = [...cars.values()].map((c) => [c, c.visible]); was.forEach(([c]) => (c.visible = false)); table.add(m); const ry = table.rotation.y; table.rotation.y = 0;
+    renderer.setRenderTarget(RT); renderer.render(sc, tcam); const px = new Uint8Array(336 * 152 * 4); renderer.readRenderTargetPixels(RT, 0, 0, 336, 152, px); renderer.setRenderTarget(null);
+    table.remove(m); table.rotation.y = ry; was.forEach(([c, v]) => (c.visible = v));
+    const cv = document.createElement("canvas"); cv.width = 336; cv.height = 152; const g = cv.getContext("2d"), im = g.createImageData(336, 152);
+    for (let y = 0; y < 152; y++) im.data.set(px.subarray((151 - y) * 336 * 4, (152 - y) * 336 * 4), y * 336 * 4); g.putImageData(im, 0, 0); img.src = cv.toDataURL("image/jpeg", 0.85); }
   function show(i) {
     idx = ((i % TEAMS.length) + TEAMS.length) % TEAMS.length; const t = TEAMS[idx];
     if (!cars.has(idx)) { const m = buildCar(t, t.drivers[0][1], true); m.traverse((o) => { if (o.isMesh) o.castShadow = true; }); cars.set(idx, m); table.add(m); }
@@ -1959,14 +1989,16 @@ const GAR = (() => {
     $("gName").textContent = t.name.toUpperCase(); $("gName").style.borderLeft = `4px solid ${t.c1}`; $("gName").style.paddingLeft = "14px";
     $("gDrivers").replaceChildren(...t.drivers.map((d, k) => { const row = document.createElement("div"), nm = document.createElement("button"); nm.type = "button"; nm.className = "gdrv"; nm.textContent = d[2]; nm.title = "Rename driver";
       nm.onclick = () => renameDriver(idx, k, nm); const b = document.createElement("b"); b.textContent = d[1]; const sp = document.createElement("span"); sp.textContent = d[0]; row.append(b, nm, sp); return row; }));
-    $("gIdx").textContent = `${idx + 1} / ${TEAMS.length}`; $("gDots").innerHTML = TEAMS.map((_, k) => `<i class="${k === idx ? "on" : ""}"></i>`).join("");
-    ring.material.color.set(t.c1); idle = 0;
+    $("gIdx").textContent = `${idx + 1} / ${TEAMS.length}`; $("gName").style.borderLeft = "none"; $("gName").style.paddingLeft = "0";
+    $("gSw").innerHTML = [t.c1, t.c2, "#111318", "#f2f2f2"].map((c) => `<i style="background:${c}"></i>`).join("");
+    buildCards(); const box = $("gCards"); [...box.children].forEach((c, k) => { c.classList.toggle("on", k === idx); if (k === idx) { c.querySelector("span").textContent = t.name; box.scrollLeft = Math.max(0, c.offsetLeft - box.clientWidth / 2 + c.offsetWidth / 2); } });
+    ang = 0; idle = 0;
   }
   canvas.addEventListener("pointerdown", (e) => { if (phase === "menu" && menuStep === "garage") { drag = e.clientX; idle = 0; } });
   addEventListener("pointermove", (e) => { if (drag !== null) { ang += (e.clientX - drag) * 0.008; drag = e.clientX; } });
   addEventListener("pointerup", () => (drag = null));
   const refresh = (i) => { const m = cars.get(i); if (m) { table.remove(m); cars.delete(i); } };
-  return { sc, cam, show, refresh, get idx() { return idx; }, set idx(v) { idx = v; }, step(dt) { idle += dt; if (drag === null) ang += dt * (idle > 2 ? 0.35 : 0.12); table.rotation.y = ang; } };
+  return { sc, cam, show, refresh, get idx() { return idx; }, set idx(v) { idx = v; }, step(dt) { idle += dt; if (drag === null && idle > 3) ang += dt * 0.12; table.rotation.y = ang + (drag === null && idle <= 3 ? Math.sin(idle * 0.9) * 0.05 : 0); }, resetCards() { cardsBuilt = false; } };
 })();
 window.__APEX = { simulate, lineAt, vAt, pointAt, DRS, get raceT() { return raceT; }, CARS, get player() { return player; }, get phase() { return phase; }, set phase(v) { phase = v; }, TL, VP, setupRace, SET, order, stepPlayer, locate, PIT, KW, RUN_R, N, DS, toggleBox, RADIO, TYRES, setTyre, get camMode() { return camMode; }, set camMode(v) { camMode = v; }, get paused() { return paused; }, set paused(v) { paused = v; }, place, simStep, GAR, buildCar, TEAMS, pitOff, boxS, PIT_BOXOFF, pitRel, HW, PIT_GUIDE };
 // the circuit: the whole world is built for one layout, so switching reloads the page and comes back to this screen
